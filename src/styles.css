@@ -1,1 +1,31 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* reset.css */
+
+/* Remove margens e preenchimentos padrão */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Define fonte e tamanho padrão */
+body {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+}
+
+/* Remova a decoração de links padrão */
+a {
+    text-decoration: none;
+}
+
+/* Outras regras de reset específicas podem ser adicionadas aqui */
+
+/* Exemplo: */
+/* Remova a lista de marcadores padrão */
+ul, ol {
+    list-style: none;
+}

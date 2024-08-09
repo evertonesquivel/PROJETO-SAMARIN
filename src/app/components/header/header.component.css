@@ -1,0 +1,33 @@
+header{
+    width: 100%;
+    height: 100px;
+    background-image: linear-gradient(to right, #DAD4FF, rgba(249,139,159,0.7));
+    
+}.container__logo{
+    
+   justify-content: space-around;
+
+}.top__logo{
+    width: 270px;
+    height: 50px;
+    margin:10px 0 0 20px ;
+    float: left;
+    
+}.container__btn__action{
+   
+    width: 30%;
+    height: 100%;
+    margin:10px 5px 0 0 ;
+    float: right;
+}.container__btn__action button{
+    width: 180px;
+    height: 50px;
+    border: solid 1px #8C3A60;
+    border-radius: 15px;
+    font-size: 24px;
+    color: #12036E;
+    background-color: #fff;
+    margin: 5px;
+
+
+}
