@@ -1,0 +1,109 @@
+/* Estilo da seção principal */
+.primary-section {
+   
+    background-image: linear-gradient(to right, #DAD4FF, rgba(249,139,159,0.7));
+    width: 100%;
+    height: 620px;
+    display: flex;
+  }.container__sec__left{
+    flex: 2;
+  }.container__sec__right{
+    flex: 1;
+
+  }.container__paragraph{
+    width: 630px;
+    height: 190px;
+    margin: 100px 0 0 20px;
+  }.primary-section h1 {
+    font-size: 74px; /* Define o tamanho da fonte do título */
+    font-weight:900;
+    color: #12036E;
+    margin-left: 40px;
+    margin-bottom: 1rem; /* Adiciona margem abaixo do título */
+  }
+  
+  .primary-section p {
+    font-size: 22px; /* Define o tamanho da fonte dos parágrafos */
+    margin-left: 40px; /* Adiciona margem acima e abaixo dos parágrafos */
+    color: #8C3A60;
+  }
+  
+  .primary-section .buttons {
+    display: flex; /* Usa flexbox para alinhar os botões */
+    justify-content: center; /* Centraliza os botões horizontalmente */
+    align-items: center; /* Alinha os botões verticalmente */
+    margin: 1rem 0; /* Adiciona margem acima e abaixo do grupo de botões */
+  }
+  
+  .primary-section .buttons button {
+    margin: 0 0.5rem; /* Adiciona margem entre os botões */
+    float : right;
+    width: 340px;
+    height: 70px;
+    border-color: transparent;
+    border-radius: 15px;
+    font-size: 24px;
+    font-weight: bolder;
+    color: #fff;
+    background-color: #513CCF;
+    margin: 0 40px;
+
+  }
+  
+  .primary-section .terms {
+    font-size: 14px; /* Define o tamanho da fonte dos termos e condições */
+    color: gray; /* Define a cor do texto dos termos e condições */
+    margin: 40px 0 0 90px;
+  }
+  
+  .primary-section .icons {
+    width: 484px; /* Define a largura da imagem */
+    height: 564px; /* Define a altura da imagem */
+    margin-top: 1.5rem; /* Adiciona margem acima da imagem */
+    transform: translateY(-30px);
+  }
+  
+  /* Estilo da seção secundária */
+  .secondary-section {
+    display: flex; /* Usa flexbox para alinhar a imagem e o texto lado a lado */
+    align-items: center; /* Alinha os itens verticalmente ao centro */
+    width: 100%;
+    height: 720px;
+    background-color: RGB(140, 58, 96, 0.1);
+  }
+  
+  .secondary-image {
+    width: 495px;
+    height: 368px;
+    margin-left: 150px;
+  }
+  
+  .text-content {
+    margin-left: 60px; /* Adiciona margem à esquerda do texto para afastá-lo da imagem */
+    width: 490px;
+    height: 190px;
+  }
+  
+  .text-content h2 {
+    font-size:  40px; /* Define o tamanho da fonte do título secundário */
+    margin: 1rem; /* Adiciona margem abaixo do título secundário */
+    color: #8C3A60;
+  }
+  
+  .text-content p {
+    margin: 20px 0 30px 0; /* Adiciona margem abaixo do parágrafo secundário */
+    font-size: 24px;
+    color: #8C3A60;
+  }
+  
+  .text-content button {
+    padding: 0.5rem 1rem; /* Define o espaçamento interno do botão */
+    font-size: 22px; /* Define o tamanho da fonte do botão */
+    width: 260px;
+    height: 54px;
+    border-radius: 20px;
+    border: solid 1px transparent;
+    background-color: #8C3A60;
+    color: #fff;
+  }
+  

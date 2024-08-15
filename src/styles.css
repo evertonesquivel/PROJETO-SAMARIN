@@ -28,4 +28,25 @@ a {
 /* Remova a lista de marcadores padrão */
 ul, ol {
     list-style: none;
+}button {
+  cursor: pointer;
 }
+/* Ocultar a barra de rolagem, mas permitir a rolagem */
+body {
+    overflow-y: scroll;
+  }
+  
+  /* Estilizando a barra de rolagem */
+  ::-webkit-scrollbar {
+    width: 4px; /* Largura ainda menor */
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0); /* Fundo totalmente transparente */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.1); /* Transparência aumentada */
+    border-radius: 3px; /* Borda mais fina */
+  }
+  

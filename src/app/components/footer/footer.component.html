@@ -1,0 +1,14 @@
+<footer>
+    <div class="footer">
+        <div *ngFor="let section of sections" class="footer-section">
+          <h4>{{ section.title }}</h4>
+          <ul>
+            <li *ngFor="let link of section.links">{{ link }}</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__coyright">
+        <img src="../../../assets/Copyright.png" alt="Copyright">
+        <p>2024 - presente. Desencolvido por Tech. Todos os direitos reservados.</p>
+      </div>
+  </footer>

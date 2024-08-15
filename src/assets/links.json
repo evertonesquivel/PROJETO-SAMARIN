@@ -1,0 +1,37 @@
+{
+    "sections": [
+      {
+        "title": "Jurídico",
+        "links": [
+          "Privacidade",
+          "Termos",
+          "Políticas de Cookies"
+        ]
+      },
+      {
+        "title": "Empregos",
+        "links": [
+          "Portal de Empregos",
+          "Blog de Tecnologia"
+        ]
+      },
+      {
+        "title": "Redes sociais",
+        "links": [
+          "Facebook",
+          "Instagram",
+          "Twitter",
+          "TikTok",
+          "YouTube"
+        ]
+      },
+      {
+        "title": "Mais",
+        "links": [
+          "Perguntas Frequentes",
+          "Acessoria de Imprensa",
+          "Contato"
+        ]
+      }
+    ]
+  }
