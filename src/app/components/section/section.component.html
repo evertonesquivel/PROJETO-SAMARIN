@@ -1,0 +1,50 @@
+<!-- Condicional para verificar se é a seção principal -->
+<div *ngIf="isPrimary" class="primary-section">
+    <!-- Título da seção -->
+    <div class="container__sec__left">
+    <h1>{{ sectionTitle }}</h1>
+  
+    <!-- Parágrafos da seção principal -->
+  <div class="container__paragraph">
+    <p>{{ sectionText1 }}</p>
+    <p>{{ sectionText2 }}</p>
+  
+  </div>
+    
+    <!-- Botões de ação da seção principal -->
+    <div class="buttons">
+      <button>{{ buttonText1 }}</button>
+      <p>ou</p>
+      <button>{{ buttonText2 }}</button>
+    </div>
+  
+    <!-- Termos e Condições abaixo dos botões -->
+    <p class="terms">
+      Ao se registrar, você concorda com nossos
+       <a href="#">Termos & Condições</a>. 
+       Saiba como usamos seus dados em nossa
+        <a href="#">Política de Privacidade</a>.
+    </p>
+  </div>
+  <div class="container__sec__right">
+    <!-- Imagem de ícones -->
+    <img [src]="imageSrc" alt="Icons" class="icons">
+</div>
+
+  </div>
+ 
+  <!-- Condicional para verificar se é uma seção secundária -->
+  <div *ngIf="!isPrimary" class="secondary-section">
+    <!-- Imagem na seção secundária -->
+    <img [src]="imageSrcSecondary" alt="Secondary Image" class="secondary-image">
+  
+    <!-- Conteúdo de texto da seção secundária -->
+    <div class="text-content">
+      <h2>{{ sectionTitle }}</h2>
+      <p>{{ secondaryText }}</p>
+  
+      <!-- Botão de ação na seção secundária -->
+      <button>{{ buttonText2 }}</button>
+    </div>
+  </div>
+  

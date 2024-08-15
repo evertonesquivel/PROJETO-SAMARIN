@@ -1,2 +1,9 @@
 <app-header></app-header>
+<app-section [isPrimary]="true"></app-section>
+
+<!-- Utiliza o componente como seção secundária com um título e imagem diferentes -->
+<app-section [isPrimary]="false" sectionTitle="Anúncio Secundário" imageSrc="assets/secondary-image.png"></app-section>
+
+<app-footer></app-footer>
+<!-- Utiliza o componente como seção principal -->
 <router-outlet />
