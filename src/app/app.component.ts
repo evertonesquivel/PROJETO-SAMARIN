@@ -3,13 +3,20 @@ import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SectionComponent } from './components/section/section.component';
+import { MainSectionComponent } from './components/main-section/main-section.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent,FooterComponent,SectionComponent,],
+  imports: [
+    RouterOutlet,
+    HeaderComponent,
+    FooterComponent,
+    SectionComponent,
+    MainSectionComponent,
+  ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'SAMARIN';

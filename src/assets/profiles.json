@@ -1,0 +1,21 @@
+[
+    {
+      "name": "Ana",
+      "age": 28,
+      "images": [
+        "https://example.com/ana1.jpg",
+        "https://example.com/ana2.jpg"
+      ],
+      "bio": "Adora aventuras e passeios ao ar livre."
+    },
+    {
+      "name": "Carlos",
+      "age": 32,
+      "images": [
+        "https://example.com/carlos1.jpg",
+        "https://example.com/carlos2.jpg"
+      ],
+      "bio": "Apaixonado por tecnologia e fotografia."
+    }
+  ]
+  
