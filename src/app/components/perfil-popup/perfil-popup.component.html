@@ -1,0 +1,14 @@
+<div class="popup-content" [@openPopup]="true">
+    <h2 class="nome-usuario">{{ user.name }} ({{ user.age }})</h2>
+    <div class="image-container">
+      <img [src]="user.images[0]" alt="Profile picture">
+      <div class="user-infos">
+        <p *ngFor="let info of user.infos">
+          {{ info }}
+        </p>
+      </div>
+    </div>
+    <p>{{ user.bio }}</p>
+    <button class="botao-fechar" mat-button (click)="closePopup()">Fechar</button>
+  </div>
+  

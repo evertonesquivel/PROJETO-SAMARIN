@@ -1,0 +1,51 @@
+.popup-content {
+    background-color: rgba(186, 72, 215, 0.25); /* cor de fundo do popup */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 30px; /* aumentei o padding para dar mais espaço */
+    width: 400px; /* aumentei a largura do popup */
+    opacity: 0.9; /* translucidez */
+    border: solid 2px #8c3a60;
+    border-radius: 10px;
+  }
+  
+  .image-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* centraliza o conteúdo */
+  }
+  
+  .nome-usuario {
+    margin-left: 20px; /* adiciona um margin à esquerda do nome do usuário */
+  }
+  
+  .botao-fechar {
+    position: absolute; /* torna o botão absoluto */
+    top: 10px; /* posiciona o botão no topo */
+    right: 10px; /* posiciona o botão à direita */
+    background-color: #fff;
+    font-size: 14px;
+    height: 27px;
+    width: 70px;
+    border-color: transparent ;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+  }
+  
+  .image-container img {
+    width: 50%;
+    height: 50%;
+    margin-right: 20px;
+    border-radius: 50%;
+  }
+  
+  .user-infos {
+    margin-left: 20px;
+  }
+  
+  .user-infos p {
+    margin-bottom: 10px;
+  }

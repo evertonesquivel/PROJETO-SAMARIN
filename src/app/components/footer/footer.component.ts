@@ -20,7 +20,7 @@ export class FooterComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.http.get<{ sections: Section[] }>('assets/links.json').subscribe(data => {
+    this.http.get<{ sections: Section[] }>('./assets/links.json').subscribe(data => {
       this.sections = data.sections;
     });
   }

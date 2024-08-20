@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MainSectionService } from '../../services/main-section.service';
 import { Person } from '../../models/person.model';
+import { MatDialog } from '@angular/material/dialog';
+import { PerfilPopupComponent } from '../perfil-popup/perfil-popup.component';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -17,7 +19,7 @@ export class MainSectionComponent implements OnInit {
   currentImageIndex: number = 0;
   infos: string[];
 
-  constructor(private mainSectionService: MainSectionService) {
+  constructor(private mainSectionService: MainSectionService, private dialog: MatDialog) {
     this.infos = []
   }
 
@@ -27,7 +29,6 @@ export class MainSectionComponent implements OnInit {
     this.currentImageIndex = 0;
     console.log(this.currentPerson.images);
   }
-
 
   prevImage(): void {
     if (this.currentPerson && this.currentPerson.images) {
@@ -61,6 +62,17 @@ export class MainSectionComponent implements OnInit {
       this.currentPerson = this.people[(currentIndex + 1) % this.people.length];
       this.currentImageIndex = 0;
     }
+  }
+
+  verPerfil(): void {
+    const dialogRef = this.dialog.open(PerfilPopupComponent, {
+      width: '400px',
+      data: { user: this.currentPerson }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Popup fechado`);
+    });
   }
 
   get currentImage(): string {
