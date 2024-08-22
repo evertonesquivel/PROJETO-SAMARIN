@@ -3,7 +3,8 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     padding: 30px; /* aumentei o padding para dar mais espaço */
-    width: 400px; /* aumentei a largura do popup */
+    width: 100%; /* aumentei a largura do popup */
+    height: 100%;
     opacity: 0.9; /* translucidez */
     border: solid 2px #8c3a60;
     border-radius: 10px;

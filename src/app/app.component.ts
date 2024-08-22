@@ -11,9 +11,7 @@ import { MainSectionComponent } from './components/main-section/main-section.com
   imports: [
     RouterOutlet,
     HeaderComponent,
-    FooterComponent,
-    SectionComponent,
-    MainSectionComponent,
+    FooterComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']

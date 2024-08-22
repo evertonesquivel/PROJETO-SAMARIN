@@ -4,11 +4,12 @@ import { Person } from '../../models/person.model';
 import { MatDialog } from '@angular/material/dialog';
 import { PerfilPopupComponent } from '../perfil-popup/perfil-popup.component';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-main-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './main-section.component.html',
   styleUrls: ['./main-section.component.css'],
   providers: [MainSectionService] // Provide the service here
@@ -67,6 +68,7 @@ export class MainSectionComponent implements OnInit {
   verPerfil(): void {
     const dialogRef = this.dialog.open(PerfilPopupComponent, {
       width: '400px',
+      height: '400px',
       data: { user: this.currentPerson }
     });
 

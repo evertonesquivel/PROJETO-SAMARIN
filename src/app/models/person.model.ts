@@ -1,13 +1,15 @@
 export class Person {
-  name: string;
-  age: number;
-  images: string[];
-  infos: string[];
+  id!: number;
+  name!: string;
+  age!: number;
+  images!: string[];
+  infos!: string[];
 
-  constructor(name: string, age: number, images: string[], infos: string[]) {
-    this.name = name;
-    this.age = age;
-    this.images = images;
-    this.infos = infos;
-  }
+  // constructor(id: number, name: string, age: number, images: string[], infos: string[]) {
+  //   this.id = id;
+  //   this.name = name;
+  //   this.age = age;
+  //   this.images = images;
+  //   this.infos = infos;
+  // }
 }

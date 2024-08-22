@@ -1,0 +1,10 @@
+<div class="badge" *ngFor="let i of personCarregado.images">
+    <img src="{{i}}" alt="">
+</div>
+<p>{{personCarregado.id}}</p>
+<p>{{personCarregado.name}}</p>
+<p>{{personCarregado.age}}</p>
+
+<span class="badge" *ngFor="let info of personCarregado.infos">
+    {{ info }}
+  </span>
