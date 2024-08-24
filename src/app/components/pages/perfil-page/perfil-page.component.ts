@@ -9,15 +9,27 @@ import { NgFor } from '@angular/common';
   standalone: true,
   imports: [NgFor],
   templateUrl: './perfil-page.component.html',
-  styleUrl: './perfil-page.component.css'
+  styleUrls: ['./perfil-page.component.css']
 })
 export class PerfilPageComponent implements OnInit {
-  personCarregado: Person = new Person
-
-  constructor(private person: MainSectionService, private route: ActivatedRoute){}
+  personCarregado: Person = {
+    id: 0,
+    name: '',
+    age: 0,
+    images: [],
+    infos: [],
+    email: '',
+    nickname: '',
+    password: ''
+  };
+  constructor(private person: MainSectionService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.personCarregado = this.person.getPersonById(parseInt(this.route.snapshot.paramMap.get('id')!))!
+    const id = parseInt(this.route.snapshot.paramMap.get('id')!);
+    const loadedPerson = this.person.getPersonById(id);
+    if (loadedPerson) {
+      this.personCarregado = loadedPerson;
+    }
   }
-
 }
+

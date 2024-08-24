@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Importa CommonModule
+import { NavigationService } from '../../services/navigation.service'; // Verifique o caminho correto
 
 @Component({
   selector: 'app-section',
@@ -19,4 +20,9 @@ export class SectionComponent {
   @Input() imageSrc: string = '../../../assets/Icons.png';
   @Input() imageSrcSecondary: string = '../../../assets/Secondaryimage.png';
 
+  constructor(private navigationService: NavigationService) {}
+
+  onLoginButtonClick() {
+    this.navigationService.navigateToLogin();
+  }
 }

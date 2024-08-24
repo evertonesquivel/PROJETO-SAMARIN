@@ -1,0 +1,80 @@
+/* Container do formulário de login */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Ocupa toda a altura da viewport */
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
+  
+  /* Estilo para o título */
+  .login-container h1 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: #333;
+  }
+  
+  /* Grupo de formulário */
+  .form-group {
+    margin-bottom: 15px;
+    width: 100%;
+    max-width: 400px; /* Limita a largura do formulário */
+  }
+  
+  /* Label dos campos de input */
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  /* Estilo dos campos de input */
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  /* Botão de login */
+  .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #007bff; /* Cor do botão */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Cor do botão ao passar o mouse */
+  .btn:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Mensagem de erro */
+  .alert {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 400px; /* Limita a largura da mensagem de erro */
+  }
+  /* login-page.component.css */
+  mat-form-field {
+    width: 100%;
+  }
+  
+  mat-icon {
+    cursor: pointer;
+  }
+  
