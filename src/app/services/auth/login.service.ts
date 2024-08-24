@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { Person } from '../../models/person.model';
-import { MainSectionService } from '../../services/main-section.service'; // Verifique o caminho correto
+import { MainSectionService } from '../../services/main-section.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +14,12 @@ export class AuthService {
   }
 
   login(credentials: { username: string, password: string }): Observable<{ token: string }> {
-    const user = this.mockUsers.find(u => u.nickname === credentials.username && u.password === credentials.password);
+    const user = this.mockUsers.find(u => u.email === credentials.username && u.password === credentials.password);
     if (user) {
-      const token = `mock-token-${user.id}`; // Gerar um token fictício com base no ID do usuário
-      localStorage.setItem('token', token); // Armazenar o token
+      const token = `mock-token-${user.id}`;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('token', token);
+      }
       return of({ token });
     } else {
       return throwError(() => new Error('Credenciais inválidas'));
@@ -25,10 +27,15 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+    }
   }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem('token');
+    if (typeof window !== 'undefined') {
+      return !!localStorage.getItem('token');
+    }
+    return false; // Ou uma lógica alternativa se localStorage não estiver disponível
   }
 }

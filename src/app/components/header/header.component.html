@@ -1,10 +1,24 @@
 <header>
     <div class="container__logo">
-        <a href="">
-            <img class="top__logo" src="../../../assets/blue logo.svg" alt="Logo">
-        </a>
+      <a href="">
+        <img class="top__logo" src="../../../assets/blue logo.svg" alt="Logo">
+      </a>
     </div>
+    
+    <!-- Condicional para mostrar o botão de login ou o menu -->
     <div class="container__btn__action">
+      <ng-container *ngIf="isAuthenticated; else showLogin">
+        <button (click)="toggleNavbar()">Menu</button>
+        <div *ngIf="navbarOpen" class="navbar">
+          <ul>
+            <li (click)="logout()">Logout</li>
+          </ul>
+        </div>
+      </ng-container>
+  
+      <ng-template #showLogin>
         <button (click)="navigateToLogin()">Entrar</button>
+      </ng-template>
     </div>
-</header>
+  </header>
+  
