@@ -1,9 +1,14 @@
-export class Person {
-  id!: number;
-  name!: string;
-  age!: number;
-  images!: string[];
-  infos!: string[];
+export interface Person {
+  id: number;
+  name: string;
+  age: number;
+  images: string[];
+  infos: string[];
+  password: string;  // Adicionado
+  nickname: string;  // Adicionado
+  email: string;     // Adicionado
+}
+
 
   // constructor(id: number, name: string, age: number, images: string[], infos: string[]) {
   //   this.id = id;
@@ -12,4 +17,3 @@ export class Person {
   //   this.images = images;
   //   this.infos = infos;
   // }
-}
