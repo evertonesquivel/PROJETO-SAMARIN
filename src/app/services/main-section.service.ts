@@ -15,7 +15,7 @@ export class MainSectionService {
       images: ['/assets/i7.png', '/assets/i2.jpeg'],
       infos: ['Software Engineer', 'Likes hiking', 'Foodie'],
       email: 'samarina@sam.com',
-      nickname: 'Sama',
+      nickname: 'Sam',
       password: 'password1'
     },
     {
