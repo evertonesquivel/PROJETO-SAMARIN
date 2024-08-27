@@ -4,10 +4,17 @@ export interface Person {
   age: number;
   images: string[];
   infos: string[];
-  password: string;  // Adicionado
-  nickname: string;  // Adicionado
-  email: string;     // Adicionado
+  email: string;
+  nickname: string;
+  password: string;
+  city: string;
+  state: string;
+  identification: string;
+  interest: string;
+  ageRange: string;
+  specificInterests: string;
 }
+
 
 
   // constructor(id: number, name: string, age: number, images: string[], infos: string[]) {

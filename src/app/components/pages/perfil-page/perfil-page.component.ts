@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Person } from '../../../models/person.model';
 import { MainSectionService } from '../../../services/main-section.service';
 import { ActivatedRoute } from '@angular/router';
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common'; 
 
 @Component({
   selector: 'app-perfil-page',
   standalone: true,
-  imports: [NgFor],
+  imports: [CommonModule, NgFor,NgIf] ,
   templateUrl: './perfil-page.component.html',
   styleUrls: ['./perfil-page.component.css']
 })
@@ -20,16 +21,49 @@ export class PerfilPageComponent implements OnInit {
     infos: [],
     email: '',
     nickname: '',
-    password: ''
+    password: '',
+    city: '',
+    state: 'BA',
+    identification: '',
+    interest: '',
+    ageRange: '',
+    specificInterests: ''
   };
-  constructor(private person: MainSectionService, private route: ActivatedRoute) {}
+
+  selectedImage: string | null = null;
+
+  constructor(private personService: MainSectionService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     const id = parseInt(this.route.snapshot.paramMap.get('id')!);
-    const loadedPerson = this.person.getPersonById(id);
+    const loadedPerson = this.personService.getPersonById(id);
     if (loadedPerson) {
       this.personCarregado = loadedPerson;
     }
   }
-}
 
+  like() {
+    alert(`Você deu like em ${this.personCarregado.name}`);
+  }
+
+  dislike() {
+    alert(`Você deu dislike em ${this.personCarregado.name}`);
+  }
+
+  sendMessage() {
+    alert(`Mensagem enviada para ${this.personCarregado.name}`);
+  }
+
+  getGalleryImages(): string[] {
+    const images = this.personCarregado.images;
+    return [images[0], images[1], images[0], images[1]];
+  }
+
+  openPopup(image: string) {
+    this.selectedImage = image;
+  }
+
+  closePopup() {
+    this.selectedImage = null;
+  }
+}
