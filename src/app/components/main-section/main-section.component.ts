@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MainSectionService } from '../../services/main-section.service';
+import { MainSectionService } from '../../services/user-data/main-section.service';
 import { Person } from '../../models/person.model';
 import { MatDialog } from '@angular/material/dialog';
 import { PerfilPopupComponent } from '../perfil-popup/perfil-popup.component';

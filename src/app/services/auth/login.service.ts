@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { Person } from '../../models/person.model';
-import { MainSectionService } from '../../services/main-section.service';
+import { MainSectionService } from '../user-data/main-section.service';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +31,7 @@ export class AuthService {
       localStorage.removeItem('token');
     }
   }
+  
 
   isAuthenticated(): boolean {
     if (typeof window !== 'undefined') {

@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Person } from '../../../models/person.model';
-import { MainSectionService } from '../../../services/main-section.service';
+import { MainSectionService } from '../../../services/user-data/main-section.service';
 import { ActivatedRoute } from '@angular/router';
-import { NgFor, NgIf } from '@angular/common';
-import { CommonModule } from '@angular/common'; 
+import { NgFor, CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-perfil-page',
   standalone: true,
-  imports: [CommonModule, NgFor,NgIf] ,
+  imports: [NgFor, CommonModule],
   templateUrl: './perfil-page.component.html',
   styleUrls: ['./perfil-page.component.css']
 })

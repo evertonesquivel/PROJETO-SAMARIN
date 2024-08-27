@@ -35,9 +35,12 @@
     </div>
   </div>
   
-  <!-- Popup -->
-  <div class="popup" *ngIf="selectedImage">
-    <button class="close-btn" (click)="closePopup()">×</button>
-    <img [src]="selectedImage" alt="Imagem ampliada">
-  </div>
+  <!-- Seção Principal e Nova Seção continuam iguais -->
+
+<!-- Popup para exibir imagem -->
+<div class="popup" *ngIf="selectedImage">
+  <img [src]="selectedImage" alt="Imagem em destaque">
+  <button class="close-popup" (click)="closePopup()">Fechar</button>
+</div>
+
   
