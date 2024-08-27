@@ -1,10 +1,43 @@
-<div class="badge" *ngFor="let i of personCarregado.images">
-    <img src="{{i}}" alt="">
-</div>
-<p>{{personCarregado.id}}</p>
-<p>{{personCarregado.name}}</p>
-<p>{{personCarregado.age}}</p>
-
-<span class="badge" *ngFor="let info of personCarregado.infos">
-    {{ info }}
-  </span>
+<!-- Seção Principal -->
+<div class="perfil-container">
+    <div class="perfil-left">
+      <img class="perfil-image" [src]="personCarregado.images[0]" alt="{{personCarregado.name}}">
+      <p class="perfil-name">{{personCarregado.name}}</p>
+      <p class="perfil-nickname">{{"@" + personCarregado.nickname}}</p>
+    </div>
+    <div class="perfil-right">
+      <p><strong>Idade:</strong> {{personCarregado.age}}</p>
+      <p><strong>Identificação:</strong> {{personCarregado.identification}}</p>
+      <p><strong>Interesse:</strong> {{personCarregado.interest}}</p>
+      <p><strong>Cidade:</strong> {{personCarregado.city}}</p>
+      <p><strong>Estado:</strong> {{personCarregado.state}}</p>
+      <p><strong>Interesses Específicos:</strong> {{personCarregado.specificInterests}}</p>
+  
+      <div class="actions">
+        <button class="like" (click)="like()">Like</button>
+        <button class="dislike" (click)="dislike()">Dislike</button>
+        <button class="send-message" (click)="sendMessage()">Mandar mensagem</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Nova Seção -->
+  <div class="additional-section">
+    <div class="interests-container">
+      <h2>Interesses</h2>
+      <p>{{personCarregado.specificInterests}}</p>
+    </div>
+    <div class="gallery-container">
+      <h2>Galeria</h2>
+      <div class="gallery-grid">
+        <img *ngFor="let img of getGalleryImages()" [src]="img" (click)="openPopup(img)" alt="Galeria">
+      </div>
+    </div>
+  </div>
+  
+  <!-- Popup -->
+  <div class="popup" *ngIf="selectedImage">
+    <button class="close-btn" (click)="closePopup()">×</button>
+    <img [src]="selectedImage" alt="Imagem ampliada">
+  </div>
+  

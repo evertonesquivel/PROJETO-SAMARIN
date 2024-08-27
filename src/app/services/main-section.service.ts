@@ -5,7 +5,6 @@ import { Person } from '../models/person.model';
   providedIn: 'root'
 })
 export class MainSectionService {
-
   // Lista de pessoas com os novos campos adicionados
   people: Person[] = [
     {
@@ -16,7 +15,13 @@ export class MainSectionService {
       infos: ['Software Engineer', 'Likes hiking', 'Foodie'],
       email: 'samarina@sam.com',
       nickname: 'Sam',
-      password: 'password1'
+      password: 'password1',
+      city: 'Santo Amaro',
+      state: 'BA',
+      identification: 'Bissexual',
+      interest: 'Todos',
+      ageRange: '20-30',
+      specificInterests: 'Gosta de aventuras ao ar livre e culinária'
     },
     {
       id: 2,
@@ -26,7 +31,13 @@ export class MainSectionService {
       infos: ['Marketing Specialist', 'Loves reading', 'Traveler'],
       email: 'jane.smith@sam.com',
       nickname: 'Jane',
-      password: 'password2'
+      password: 'password2',
+      city: 'Cachoeira',
+      state: 'BA',
+      identification: 'Heterossexual',
+      interest: 'Homens',
+      ageRange: '25-35',
+      specificInterests: 'Apaixonada por literatura e viagens'
     },
     {
       id: 3,
@@ -36,7 +47,13 @@ export class MainSectionService {
       infos: ['Data Scientist', 'Enjoys playing guitar', 'Food enthusiast'],
       email: 'bob.johnson@sam.com',
       nickname: 'Bob',
-      password: 'password3'
+      password: 'password3',
+      city: 'São Félix',
+      state: 'BA',
+      identification: 'Pansexual',
+      interest: 'Todos',
+      ageRange: '20-30',
+      specificInterests: 'Gosta de música e culinária'
     },
     {
       id: 4,
@@ -46,7 +63,13 @@ export class MainSectionService {
       infos: ['Graphic Designer', 'Loves yoga', 'Animal lover'],
       email: 'alice.brown@sam.com',
       nickname: 'Alice',
-      password: 'password4'
+      password: 'password4',
+      city: 'Santo Amaro',
+      state: 'BA',
+      identification: 'Lésbica',
+      interest: 'Mulheres',
+      ageRange: '25-35',
+      specificInterests: 'Amante de yoga e defensora dos animais'
     },
     {
       id: 5,
@@ -56,7 +79,13 @@ export class MainSectionService {
       infos: ['Software Developer', 'Enjoys playing basketball', 'Music lover'],
       email: 'mike.davis@sam.com',
       nickname: 'Mike',
-      password: 'password5'
+      password: 'password5',
+      city: 'Maragojipe',
+      state: 'BA',
+      identification: 'Heterossexual',
+      interest: 'Mulheres',
+      ageRange: '30-40',
+      specificInterests: 'Amante de esportes e música'
     },
     {
       id: 6,
@@ -66,7 +95,13 @@ export class MainSectionService {
       infos: ['Product Manager', 'Loves hiking', 'Foodie'],
       email: 'emily.chen@sam.com',
       nickname: 'Emily',
-      password: 'password6'
+      password: 'password6',
+      city: 'São Félix',
+      state: 'BA',
+      identification: 'Bissexual',
+      interest: 'Todos',
+      ageRange: '20-30',
+      specificInterests: 'Gosta de trilhas e culinária'
     },
     {
       id: 7,
@@ -76,7 +111,13 @@ export class MainSectionService {
       infos: ['UX Designer', 'Enjoys playing tennis', 'Traveler'],
       email: 'david.lee@sam.com',
       nickname: 'David',
-      password: 'password7'
+      password: 'password7',
+      city: 'Cachoeira',
+      state: 'BA',
+      identification: 'Heterossexual',
+      interest: 'Todos',
+      ageRange: '30-40',
+      specificInterests: 'Gosta de esportes e viagens'
     },
     {
       id: 8,
@@ -86,11 +127,17 @@ export class MainSectionService {
       infos: ['Frontend Developer', 'Loves reading', 'Animal lover'],
       email: 'sarah.taylor@sam.com',
       nickname: 'Sarah',
-      password: 'password8'
+      password: 'password8',
+      city: 'Maragojipe',
+      state: 'BA',
+      identification: 'Lésbica',
+      interest: 'Mulheres',
+      ageRange: '20-30',
+      specificInterests: 'Apaixonada por leitura e defensora dos animais'
     }
   ];
 
-  constructor() { }
+  constructor() {}
 
   getPeople(): Person[] {
     return this.people;
