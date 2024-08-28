@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/login.service';
 import { MainSectionService } from '../../services/user-data/main-section.service';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -11,11 +12,12 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule]
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   isAuthenticated: boolean = false;
   navbarOpen: boolean = false;
   profileMenuOpen: boolean = false;
   userProfile: any = {};  // Ajuste conforme o tipo do perfil
+  private authSubscription!: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -24,15 +26,18 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.isAuthenticated = this.authService.isAuthenticated();
+    this.authSubscription = this.authService.authStatus$.subscribe(status => {
+      this.isAuthenticated = status;
 
-    if (this.isAuthenticated) {
-      // Supondo que getPeople() retorna um array de perfis, você pode precisar ajustar conforme a estrutura real dos dados
-      const people = this.mainSectionService.getPeople();
-      if (people.length > 0) {
-        this.userProfile = people[0];  // Ajuste conforme necessário
+      if (this.isAuthenticated) {
+        const userId = this.authService.getLoggedInUserId();
+        if (userId !== null) {
+          this.userProfile = this.mainSectionService.getPeople().find(user => user.id === userId);
+        }
+      } else {
+        this.userProfile = {}; // Limpa o perfil quando não autenticado
       }
-    }
+    });
   }
 
   toggleNavbar() {
@@ -54,5 +59,11 @@ export class HeaderComponent implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  ngOnDestroy() {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 }
