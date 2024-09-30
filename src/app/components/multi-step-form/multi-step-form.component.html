@@ -1,0 +1,115 @@
+
+<div *ngIf="currentStep === 0">
+    <form [formGroup]="step1Form">
+      <div>
+        <label>Nome</label>
+        <input formControlName="nome" type="text">
+      </div>
+      <div>
+        <label>Sobrenome</label>
+        <input formControlName="sobrenome" type="text">
+      </div>
+      <div>
+        <label>Email</label>
+        <input formControlName="email" type="email">
+      </div>
+      <div>
+        <label>Telefone</label>
+        <input formControlName="telefone" type="tel">
+      </div>
+      <div>
+        <label>Senha</label>
+        <input formControlName="senha" type="password">
+      </div>
+      <div>
+        <label>Confirmar Senha</label>
+        <input formControlName="confirmarSenha" type="password">
+      </div>
+      <button type="button" (click)="nextStep()" [disabled]="!step1Form.valid">Continuar</button>
+    </form>
+  </div>
+  
+  <!-- Etapa 2: Informações Pessoais -->
+  <div *ngIf="currentStep === 1">
+    <form [formGroup]="step2Form">
+      <div>
+        <label>Data de Nascimento</label>
+        <input formControlName="dataNascimento" type="date">
+      </div>
+      <div>
+        <label>Estado</label>
+        <input formControlName="estado" type="text">
+      </div>
+      <div>
+        <label>Cidade</label>
+        <input formControlName="cidade" type="text">
+      </div>
+      <div>
+        <label>Profissão</label>
+        <input formControlName="profissao" type="text">
+      </div>
+      <div>
+        <label>Pronomes</label>
+        <input formControlName="pronomes" type="text">
+      </div>
+      <div>
+        <label>Identificação de Gênero</label>
+        <input formControlName="identificacaoGenero" type="text">
+      </div>
+      <button type="button" (click)="previousStep()">Voltar</button>
+      <button type="button" (click)="nextStep()" [disabled]="!step2Form.valid">Continuar</button>
+    </form>
+  </div>
+  
+  <!-- Etapa 3: Preferências e Personalidade -->
+  <div *ngIf="currentStep === 2">
+    <form [formGroup]="step3Form">
+      <div>
+        <label>Nickname</label>
+        <input formControlName="nickname" type="text">
+      </div>
+      <div>
+        <label>Interesse</label>
+        <input formControlName="interesse" type="text">
+      </div>
+      <div>
+        <label>Faixa de Idade</label>
+        <input formControlName="faixaIdade" type="number" min="18">
+      </div>
+      <div>
+        <label>Personalidade</label>
+        <input formControlName="personalidade" type="text">
+      </div>
+      <button type="button" (click)="previousStep()">Voltar</button>
+      <button type="button" (click)="nextStep()" [disabled]="!step3Form.valid">Continuar</button>
+    </form>
+  </div>
+  
+  <!-- Etapa 4: Hobbies e Descrição -->
+  <div *ngIf="currentStep === 3">
+    <form [formGroup]="step4Form">
+      <div>
+        <label>Hobbies</label>
+        <input formControlName="hobbies" type="text">
+      </div>
+      <div>
+        <label>Descreva sobre você</label>
+        <textarea formControlName="descricao"></textarea>
+      </div>
+      <button type="button" (click)="previousStep()">Voltar</button>
+      <button type="button" (click)="nextStep()" [disabled]="!step4Form.valid">Continuar</button>
+    </form>
+  </div>
+  
+  <!-- Etapa 5: Upload de Imagem -->
+  <div *ngIf="currentStep === 4">
+    <form [formGroup]="step5Form">
+      <div>
+        <label>Imagem de Perfil</label>
+        <input formControlName="imagemPerfil" type="file" accept="image/*">
+      </div>
+      <button type="button" (click)="previousStep()">Voltar</button>
+      <button type="submit" (click)="submitForm()" [disabled]="!step5Form.valid">Confirmar</button>
+    </form>
+  </div>
+  

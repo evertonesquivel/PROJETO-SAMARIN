@@ -1,0 +1,15 @@
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  
+  input, textarea {
+    width: 100%;
+    padding: 8px;
+  }
+  
+  button {
+    margin-top: 16px;
+  }
+  
