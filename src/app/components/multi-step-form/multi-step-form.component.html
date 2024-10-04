@@ -1,7 +1,11 @@
 <div class="form-container">
-  <h1>Formulário Multi-Etapas</h1>
+ 
 
   <div *ngIf="currentStep === 0">
+    <div class="container__texts">
+      <h2>Cadastro de novos usuários</h2>
+      <p>Precisamos que informe seus dados pessoais abaixo : </p>
+    </div>
     <form [formGroup]="step1Form">
       <div class="form-group">
         <label>Nome</label>

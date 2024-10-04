@@ -4,6 +4,19 @@ form {
   grid-template-columns: 1fr 1fr;
   gap: 20px;
   font-size: 14px;
+}.container__texts{
+text-align: center;
+}
+h2{
+  margin-top: 10px;
+  font-weight: 800;
+  font-size: 24px;
+  color: #12036E ;
+}
+p{
+  font-weight: 400;
+  font-size: 20px;
+  color: #12036E ;
 }
 
 /* Labels */
