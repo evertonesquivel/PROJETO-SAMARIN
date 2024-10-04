@@ -6,19 +6,18 @@ import { CommonModule } from '@angular/common';
   selector: 'app-multi-step-form',
   templateUrl: './multi-step-form.component.html',
   styleUrls: ['./multi-step-form.component.css'],
-  standalone: true, // Se for standalone, inclua isso
-  imports: [ReactiveFormsModule, CommonModule] // Aqui adiciona o ReactiveFormsModule
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule]
 })
 export class MultiStepFormComponent implements OnInit {
-  
-
-
   currentStep = 0;  // Controla o passo atual do formulário
   step1Form!: FormGroup;
   step2Form!: FormGroup;
   step3Form!: FormGroup;
   step4Form!: FormGroup;
   step5Form!: FormGroup;
+
+  personalidadeOptions = ['Aventureiro', 'Criativo', 'Analítico', 'Sociável']; // Exemplo de opções
 
   constructor(private fb: FormBuilder) {}
 

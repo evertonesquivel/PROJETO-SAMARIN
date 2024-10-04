@@ -1,115 +1,115 @@
+<div class="form-container">
+  <h1>Formulário Multi-Etapas</h1>
 
-<div *ngIf="currentStep === 0">
+  <div *ngIf="currentStep === 0">
     <form [formGroup]="step1Form">
-      <div>
+      <div class="form-group">
         <label>Nome</label>
-        <input formControlName="nome" type="text">
+        <input formControlName="nome" type="text" />
       </div>
-      <div>
+      <div class="form-group">
         <label>Sobrenome</label>
-        <input formControlName="sobrenome" type="text">
+        <input formControlName="sobrenome" type="text" />
       </div>
-      <div>
+      <div class="form-group">
         <label>Email</label>
-        <input formControlName="email" type="email">
+        <input formControlName="email" type="email" />
       </div>
-      <div>
+      <div class="form-group">
         <label>Telefone</label>
-        <input formControlName="telefone" type="tel">
+        <input formControlName="telefone" type="text" />
       </div>
-      <div>
+      <div class="form-group">
         <label>Senha</label>
-        <input formControlName="senha" type="password">
+        <input formControlName="senha" type="password" />
       </div>
-      <div>
+      <div class="form-group">
         <label>Confirmar Senha</label>
-        <input formControlName="confirmarSenha" type="password">
+        <input formControlName="confirmarSenha" type="password" />
       </div>
       <button type="button" (click)="nextStep()" [disabled]="!step1Form.valid">Continuar</button>
     </form>
   </div>
-  
-  <!-- Etapa 2: Informações Pessoais -->
+
   <div *ngIf="currentStep === 1">
     <form [formGroup]="step2Form">
-      <div>
+      <div class="form-group">
         <label>Data de Nascimento</label>
-        <input formControlName="dataNascimento" type="date">
+        <input formControlName="dataNascimento" type="date" />
       </div>
-      <div>
+      <div class="form-group">
         <label>Estado</label>
-        <input formControlName="estado" type="text">
+        <input formControlName="estado" type="text" />
       </div>
-      <div>
+      <div class="form-group">
         <label>Cidade</label>
-        <input formControlName="cidade" type="text">
+        <input formControlName="cidade" type="text" />
       </div>
-      <div>
+      <div class="form-group">
         <label>Profissão</label>
-        <input formControlName="profissao" type="text">
+        <input formControlName="profissao" type="text" />
       </div>
-      <div>
+      <div class="form-group">
         <label>Pronomes</label>
-        <input formControlName="pronomes" type="text">
+        <input formControlName="pronomes" type="text" />
       </div>
-      <div>
+      <div class="form-group">
         <label>Identificação de Gênero</label>
-        <input formControlName="identificacaoGenero" type="text">
+        <input formControlName="identificacaoGenero" type="text" />
       </div>
       <button type="button" (click)="previousStep()">Voltar</button>
       <button type="button" (click)="nextStep()" [disabled]="!step2Form.valid">Continuar</button>
     </form>
   </div>
-  
-  <!-- Etapa 3: Preferências e Personalidade -->
+
   <div *ngIf="currentStep === 2">
     <form [formGroup]="step3Form">
-      <div>
+      <div class="form-group">
         <label>Nickname</label>
-        <input formControlName="nickname" type="text">
+        <input formControlName="nickname" type="text" />
       </div>
-      <div>
+      <div class="form-group">
         <label>Interesse</label>
-        <input formControlName="interesse" type="text">
+        <input formControlName="interesse" type="text" />
       </div>
-      <div>
+      <div class="form-group">
         <label>Faixa de Idade</label>
-        <input formControlName="faixaIdade" type="number" min="18">
+        <input formControlName="faixaIdade" type="number" min="18" />
       </div>
-      <div>
+      <div class="form-group">
         <label>Personalidade</label>
-        <input formControlName="personalidade" type="text">
+        <select formControlName="personalidade">
+          <option *ngFor="let trait of personalidadeOptions" [value]="trait">{{ trait }}</option>
+        </select>
       </div>
       <button type="button" (click)="previousStep()">Voltar</button>
       <button type="button" (click)="nextStep()" [disabled]="!step3Form.valid">Continuar</button>
     </form>
   </div>
-  
-  <!-- Etapa 4: Hobbies e Descrição -->
+
   <div *ngIf="currentStep === 3">
     <form [formGroup]="step4Form">
-      <div>
+      <div class="form-group">
         <label>Hobbies</label>
-        <input formControlName="hobbies" type="text">
+        <input formControlName="hobbies" type="text" />
       </div>
-      <div>
-        <label>Descreva sobre você</label>
+      <div class="form-group">
+        <label>Descreva mais sobre você e seus interesses</label>
         <textarea formControlName="descricao"></textarea>
       </div>
       <button type="button" (click)="previousStep()">Voltar</button>
       <button type="button" (click)="nextStep()" [disabled]="!step4Form.valid">Continuar</button>
     </form>
   </div>
-  
-  <!-- Etapa 5: Upload de Imagem -->
+
   <div *ngIf="currentStep === 4">
     <form [formGroup]="step5Form">
-      <div>
+      <div class="form-group">
         <label>Imagem de Perfil</label>
-        <input formControlName="imagemPerfil" type="file" accept="image/*">
+        <input formControlName="imagemPerfil" type="file" />
       </div>
       <button type="button" (click)="previousStep()">Voltar</button>
-      <button type="submit" (click)="submitForm()" [disabled]="!step5Form.valid">Confirmar</button>
+      <button type="button" (click)="submitForm()" [disabled]="!step5Form.valid">Confirmar</button>
     </form>
   </div>
-  
+</div>
