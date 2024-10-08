@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import { AuthService } from './login.service';
+import { LoginService } from './login.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
@@ -8,10 +8,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private authService: AuthService, private router: Router, private snackBar: MatSnackBar) {}
+  constructor(private LoginService: LoginService, private router: Router, private snackBar: MatSnackBar) {}
 
   canActivate(): boolean {
-    if (this.authService.isAuthenticated()) {
+    if (this.LoginService.isAuthenticated()) {
       return true; // Permite o acesso à rota se o usuário estiver autenticado
     } else {
       this.snackBar.open('Login necessário para acessar esta página', 'Fechar', {
