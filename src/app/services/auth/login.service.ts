@@ -13,7 +13,8 @@ export class LoginService {
   constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
+    console.log({ email, password });
+return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
       map((response: any) => {
         if (response && response.token && isPlatformBrowser(this.platformId)) {
           // Armazenar o token no localStorage para ser utilizado em outras requisições
