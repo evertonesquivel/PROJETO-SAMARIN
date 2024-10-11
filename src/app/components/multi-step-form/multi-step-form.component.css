@@ -1,0 +1,102 @@
+/* Formulário */
+form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  font-size: 14px;
+}.container__texts{
+text-align: center;
+}
+h2{
+  margin-top: 10px;
+  font-weight: 800;
+  font-size: 24px;
+  color: #12036E ;
+}
+p{
+  font-weight: 400;
+  font-size: 20px;
+  color: #12036E ;
+}
+
+/* Labels */
+label {
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+/* Inputs e Textareas */
+input, textarea {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  margin-bottom: 15px;
+  border-radius: 15px; /* Aumenta o arredondamento */
+  border: 1px solid #ccc;
+  transition: border-color 0.3s ease; /* Transição suave para a cor da borda */
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: #8c3a60; /* Cor da borda ao focar */
+}
+
+/* Efeitos de hover para os inputs */
+input:hover, textarea:hover {
+  border-color: #b4b4b4; /* Cor ligeiramente mais clara ao passar o mouse */
+}
+
+/* Container dos Botões */
+.buttons-container {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Botões */
+button {
+  font-size: 16px;
+  font-weight: 600;
+  width: 240px;
+  height: 40px;
+  border: 2px solid #fff; /* Borda inicial branca */
+  border-radius: 10px;
+  background-color: #fff;
+  color: #8c3a60; /* Cor da letra padrão */
+  transition: all 0.4s ease;
+  animation: borderColorAnimation 0.4s forwards; /* Animação da borda */
+}
+
+button:disabled {
+  background-color: #fff;
+  color: #000000;
+  border: none;
+}
+
+button:enabled {
+  cursor: pointer;
+  color: #8c3a60; /* Mantém a cor da letra ao habilitar */
+}
+
+button:enabled:hover {
+  background-color: #8c3a60;
+  color: #fff; /* Cor da letra muda para branco no hover */
+}
+
+/* Animação da borda */
+@keyframes borderColorAnimation {
+  from {
+    border-color: #fff; /* Começa com borda branca */
+  }
+  to {
+    border-color: #8c3a60; /* Termina com borda na cor desejada */
+  }
+}
+
+/* Logo */
+.logo {
+  display: block;
+  margin: 0 auto 40px auto; /* Margem inferior maior para espaçamento */
+}

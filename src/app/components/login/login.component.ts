@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth/login.service';
+import { LoginService } from '../../services/auth/login.service';
 
 @Component({
   selector: 'app-login',
@@ -14,15 +13,15 @@ import { AuthService } from '../../services/auth/login.service';
 })
 export class LoginComponent {
   
-  credentials = { username: '', password: '' };
+  credentials = { email: '', password: '' };
   loginError: string | null = null;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private loginService: LoginService, private router: Router) { }
 
   login() {
-    this.authService.login(this.credentials).subscribe(
+    this.loginService.login(this.credentials.email, this.credentials.password).subscribe(
       response => {
-        localStorage.setItem('token', response.token); // Armazenar o token no localStorage
+        // A verificação e armazenamento do token agora são feitos no LoginService
         this.router.navigate(['/home']); // Redirecionar para a página inicial
       },
       error => {

@@ -1,0 +1,119 @@
+<div class="form-container">
+ 
+
+  <div *ngIf="currentStep === 0">
+    <div class="container__texts">
+      <h2>Cadastro de novos usuários</h2>
+      <p>Precisamos que informe seus dados pessoais abaixo : </p>
+    </div>
+    <form [formGroup]="step1Form">
+      <div class="form-group">
+        <label>Nome</label>
+        <input formControlName="nome" type="text" />
+      </div>
+      <div class="form-group">
+        <label>Sobrenome</label>
+        <input formControlName="sobrenome" type="text" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input formControlName="email" type="email" />
+      </div>
+      <div class="form-group">
+        <label>Telefone</label>
+        <input formControlName="telefone" type="text" />
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input formControlName="senha" type="password" />
+      </div>
+      <div class="form-group">
+        <label>Confirmar Senha</label>
+        <input formControlName="confirmarSenha" type="password" />
+      </div>
+      <button type="button" (click)="nextStep()" [disabled]="!step1Form.valid">Continuar</button>
+    </form>
+  </div>
+
+  <div *ngIf="currentStep === 1">
+    <form [formGroup]="step2Form">
+      <div class="form-group">
+        <label>Data de Nascimento</label>
+        <input formControlName="dataNascimento" type="date" />
+      </div>
+      <div class="form-group">
+        <label>Estado</label>
+        <input formControlName="estado" type="text" />
+      </div>
+      <div class="form-group">
+        <label>Cidade</label>
+        <input formControlName="cidade" type="text" />
+      </div>
+      <div class="form-group">
+        <label>Profissão</label>
+        <input formControlName="profissao" type="text" />
+      </div>
+      <div class="form-group">
+        <label>Pronomes</label>
+        <input formControlName="pronomes" type="text" />
+      </div>
+      <div class="form-group">
+        <label>Identificação de Gênero</label>
+        <input formControlName="identificacaoGenero" type="text" />
+      </div>
+      <button type="button" (click)="previousStep()">Voltar</button>
+      <button type="button" (click)="nextStep()" [disabled]="!step2Form.valid">Continuar</button>
+    </form>
+  </div>
+
+  <div *ngIf="currentStep === 2">
+    <form [formGroup]="step3Form">
+      <div class="form-group">
+        <label>Nickname</label>
+        <input formControlName="nickname" type="text" />
+      </div>
+      <div class="form-group">
+        <label>Interesse</label>
+        <input formControlName="interesse" type="text" />
+      </div>
+      <div class="form-group">
+        <label>Faixa de Idade</label>
+        <input formControlName="faixaIdade" type="number" min="18" />
+      </div>
+      <div class="form-group">
+        <label>Personalidade</label>
+        <select formControlName="personalidade">
+          <option *ngFor="let trait of personalidadeOptions" [value]="trait">{{ trait }}</option>
+        </select>
+      </div>
+      <button type="button" (click)="previousStep()">Voltar</button>
+      <button type="button" (click)="nextStep()" [disabled]="!step3Form.valid">Continuar</button>
+    </form>
+  </div>
+
+  <div *ngIf="currentStep === 3">
+    <form [formGroup]="step4Form">
+      <div class="form-group">
+        <label>Hobbies</label>
+        <input formControlName="hobbies" type="text" />
+      </div>
+      <div class="form-group">
+        <label>Descreva mais sobre você e seus interesses</label>
+        <textarea formControlName="descricao"></textarea>
+      </div>
+      <button type="button" (click)="previousStep()">Voltar</button>
+      <button type="button" (click)="nextStep()" [disabled]="!step4Form.valid">Continuar</button>
+    </form>
+  </div>
+
+  <div *ngIf="currentStep === 4">
+    <form [formGroup]="step5Form">
+      <div class="form-group">
+        <label>Imagem de Perfil</label>
+        <input formControlName="imagemPerfil" type="file" />
+      </div>
+      <button type="button" (click)="previousStep()">Voltar</button>
+      <button type="button" (click)="submitForm()" [disabled]="!step5Form.valid">Confirmar</button>
+    </form>
+  </div>
+</div>

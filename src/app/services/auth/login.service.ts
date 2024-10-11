@@ -1,56 +1,49 @@
-import { Injectable } from '@angular/core';
-import { Observable, of, throwError, BehaviorSubject } from 'rxjs';
-import { Person } from '../../models/person.model';
-import { MainSectionService } from '../user-data/main-section.service';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class AuthService {
-  private mockUsers: Person[];
-  private authStatus = new BehaviorSubject<boolean>(this.isAuthenticated());
+export class LoginService {
+  private apiUrl = 'http://localhost:3000'; // URL da sua API backend
 
-  authStatus$ = this.authStatus.asObservable(); // Exponha como Observable
+  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
 
-  constructor(private mainSectionService: MainSectionService) {
-    this.mockUsers = this.mainSectionService.getPeople();
-  }
-
-  login(credentials: { username: string, password: string }): Observable<{ token: string, userId: number }> {
-    const user = this.mockUsers.find(u => u.email === credentials.username && u.password === credentials.password);
-    if (user) {
-      const token = `mock-token-${user.id}`;
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('token', token);
-        localStorage.setItem('userId', user.id.toString());
-      }
-      this.authStatus.next(true); // Notifica a mudança de estado
-      return of({ token, userId: user.id });
-    } else {
-      return throwError(() => new Error('Credenciais inválidas'));
-    }
+  login(email: string, password: string): Observable<any> {
+    console.log({ email, password });
+return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
+      map((response: any) => {
+        if (response && response.token && isPlatformBrowser(this.platformId)) {
+          // Armazenar o token no localStorage para ser utilizado em outras requisições
+          localStorage.setItem('authToken', response.token);
+        }
+        return response;
+      })
+    );
   }
 
   logout(): void {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('token');
-      localStorage.removeItem('userId');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('authToken'); // Remove o token ao fazer logout
     }
-    this.authStatus.next(false); // Notifica a mudança de estado
   }
 
   isAuthenticated(): boolean {
-    if (typeof window !== 'undefined') {
-      return !!localStorage.getItem('token');
-    }
-    return false;
+    // Verifica se o token existe no localStorage
+    return isPlatformBrowser(this.platformId) && !!localStorage.getItem('authToken');
   }
 
-  getLoggedInUserId(): number | null {
-    if (typeof window !== 'undefined') {
-      const userId = localStorage.getItem('userId');
-      return userId ? parseInt(userId, 10) : null;
-    }
-    return null;
+  getToken(): string | null {
+    return isPlatformBrowser(this.platformId) ? localStorage.getItem('authToken') : null;
+  }
+
+  getUserProfile(): Observable<any> {
+    const token = this.getToken(); // Assumindo que você tem um método para pegar o token
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+  
+    return this.http.get(`${this.apiUrl}/profile`, { headers });
   }
 }

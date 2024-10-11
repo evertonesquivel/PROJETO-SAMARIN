@@ -23,7 +23,10 @@
         <button class="like" (click)="like()">Like</button>
         <button class="dislike" (click)="dislike()">X</button>
         <!-- <button class="view-profile" (click)="verPerfil()">Ver perfil</button> -->
-        <button routerLink="/perfil/{{currentPerson?.id}}" class="view-profile">Ver perfil</button>
+        <button (click)="navigateToProfile(users[currentIndex]?.id ?? 0)" class="view-profile-...">
+          Ver Perfil
+        </button>
+        
         <button class="send-message">Mandar mensagem</button>
       </div>
     </div>

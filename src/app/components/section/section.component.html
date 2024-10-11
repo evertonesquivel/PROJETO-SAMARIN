@@ -11,7 +11,7 @@
     <div class="buttons">
       <button (click)="onLoginButtonClick()">{{ buttonText1 }}</button>
       <p>ou</p>
-      <button>{{ buttonText2 }}</button>
+      <button  (click)="navigateToCreateAccount()">{{ buttonText2 }}</button>
     </div>
 
     <p class="terms">
@@ -31,6 +31,6 @@
   <div class="text-content">
     <h2>{{ sectionTitle }}</h2>
     <p>{{ secondaryText }}</p>
-    <button>{{ buttonText2 }}</button>
+    <button (click)="navigateToCreateAccount()">{{ buttonText2 }}</button>
   </div>
 </div>

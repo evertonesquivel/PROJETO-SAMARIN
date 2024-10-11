@@ -1,69 +1,63 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth/login.service';
-import { MainSectionService } from '../../services/user-data/main-section.service';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { LoginService } from '../../services/auth/login.service';
 import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule],
+  providers: [LoginService] // Provide the AuthService here
 })
-export class HeaderComponent implements OnInit, OnDestroy {
-  isAuthenticated: boolean = false;
-  navbarOpen: boolean = false;
-  profileMenuOpen: boolean = false;
-  userProfile: any = {};  // Ajuste conforme o tipo do perfil
-  private authSubscription!: Subscription;
+export class HeaderComponent implements OnInit {
+  
+  isAuthenticated = false; // Exemplo inicial; altere conforme sua lógica
+  userProfile: any = {}; // Defina a estrutura do userProfile de acordo com seu modelo
+  profileMenuOpen = false;
+  navbarOpen = false;
 
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private mainSectionService: MainSectionService
-  ) {}
+  constructor(private loginService: LoginService, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit() {
-    this.authSubscription = this.authService.authStatus$.subscribe(status => {
-      this.isAuthenticated = status;
+    this.isAuthenticated = this.loginService.isAuthenticated();
+    if (this.isAuthenticated) {
+      this.getUserProfile();
+    }
+  }
 
-      if (this.isAuthenticated) {
-        const userId = this.authService.getLoggedInUserId();
-        if (userId !== null) {
-          this.userProfile = this.mainSectionService.getPeople().find(user => user.id === userId);
-        }
-      } else {
-        this.userProfile = {}; // Limpa o perfil quando não autenticado
+  getUserProfile(): void {
+    this.loginService.getUserProfile().subscribe(
+      (data) => {
+        this.userProfile = data;
+      },
+      (error) => {
+        console.error('Erro ao buscar o perfil do usuário', error);
       }
-    });
+    );
+  }
+
+  toggleProfileMenu(): void {
+    this.profileMenuOpen = !this.profileMenuOpen;
+  }
+
+  goToMessages(): void {
+    this.router.navigate(['/messages']);
+  }
+
+  logout(): void {
+    this.isAuthenticated = false; 
+    this.loginService.logout();
+    this.router.navigate(['/login']); // Redirecionar para a página de login
   }
 
   toggleNavbar() {
     this.navbarOpen = !this.navbarOpen;
   }
 
-  toggleProfileMenu() {
-    this.profileMenuOpen = !this.profileMenuOpen;
-  }
-
   navigateToLogin() {
     this.router.navigate(['/login']);
-  }
-
-  goToMessages() {
-    this.router.navigate(['/messages']);
-  }
-
-  logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
-  }
-
-  ngOnDestroy() {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
   }
 }

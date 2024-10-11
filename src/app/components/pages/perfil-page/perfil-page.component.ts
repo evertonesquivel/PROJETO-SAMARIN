@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Person } from '../../../models/person.model';
 import { MainSectionService } from '../../../services/user-data/main-section.service';
 import { ActivatedRoute } from '@angular/router';
-import { NgFor, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-perfil-page',
   standalone: true,
-  imports: [NgFor, CommonModule],
+  imports: [CommonModule],
   templateUrl: './perfil-page.component.html',
   styleUrls: ['./perfil-page.component.css']
 })
-export class PerfilPageComponent implements OnInit {
+export class PerfilPageComponent implements OnInit, OnDestroy {
   personCarregado: Person = {
     id: 0,
     name: '',
@@ -30,15 +31,21 @@ export class PerfilPageComponent implements OnInit {
   };
 
   selectedImage: string | null = null;
+  private subscription: Subscription = new Subscription();
 
   constructor(private personService: MainSectionService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     const id = parseInt(this.route.snapshot.paramMap.get('id')!);
-    const loadedPerson = this.personService.getPersonById(id);
-    if (loadedPerson) {
-      this.personCarregado = loadedPerson;
-    }
+    this.subscription.add(
+      this.personService.getUserById(id).subscribe((loadedPerson: Person) => {
+        this.personCarregado = loadedPerson; // Aqui você já terá o objeto Person completo
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe(); // Limpa a assinatura para evitar vazamentos de memória
   }
 
   like() {
@@ -54,8 +61,7 @@ export class PerfilPageComponent implements OnInit {
   }
 
   getGalleryImages(): string[] {
-    const images = this.personCarregado.images;
-    return [images[0], images[1], images[0], images[1]];
+    return this.personCarregado.images.slice(0, 2); // Retorna apenas as duas primeiras imagens
   }
 
   openPopup(image: string) {
