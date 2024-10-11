@@ -2,6 +2,7 @@ export interface Person {
   id: number;
   name: string;
   age: number;
+  birth_date: string; // Adicione esta linha
   images: string[];
   infos: string[];
   email: string;
@@ -14,7 +15,6 @@ export interface Person {
   ageRange: string;
   specificInterests: string;
 }
-
 
 
   // constructor(id: number, name: string, age: number, images: string[], infos: string[]) {
