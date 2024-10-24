@@ -13,12 +13,11 @@ export class LoginService {
   constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   login(email: string, password: string): Observable<any> {
-    console.log({ email, password });
-return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
+    return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
       map((response: any) => {
-        if (response && response.token && isPlatformBrowser(this.platformId)) {
-          // Armazenar o token no localStorage para ser utilizado em outras requisições
+        if (response && response.token && response.userId && isPlatformBrowser(this.platformId)) {
           localStorage.setItem('authToken', response.token);
+          localStorage.setItem('userId', response.userId.toString());
         }
         return response;
       })
@@ -27,10 +26,18 @@ return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
 
   logout(): void {
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('authToken'); // Remove o token ao fazer logout
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userId');
     }
   }
 
+  getUserId(): number | null {
+    if (isPlatformBrowser(this.platformId)) {
+      const userId = localStorage.getItem('userId');
+      return userId ? parseInt(userId, 10) : null;
+    }
+    return null;
+  }
   isAuthenticated(): boolean {
     // Verifica se o token existe no localStorage
     return isPlatformBrowser(this.platformId) && !!localStorage.getItem('authToken');
@@ -40,10 +47,13 @@ return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
     return isPlatformBrowser(this.platformId) ? localStorage.getItem('authToken') : null;
   }
 
+  // Retorna o perfil do usuário logado, incluindo o ID
   getUserProfile(): Observable<any> {
-    const token = this.getToken(); // Assumindo que você tem um método para pegar o token
+    const token = this.getToken(); 
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-  
     return this.http.get(`${this.apiUrl}/profile`, { headers });
   }
+
+  // Método para pegar o ID do usuário logado
+  
 }

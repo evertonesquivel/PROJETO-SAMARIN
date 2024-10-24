@@ -27,7 +27,9 @@ export class PerfilPageComponent implements OnInit, OnDestroy {
     identification: '',
     interest: '',
     ageRange: '',
-    specificInterests: ''
+    specificInterests: '',
+    birth_date : '',
+
   };
 
   selectedImage: string | null = null;
