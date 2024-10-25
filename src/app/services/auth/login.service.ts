@@ -8,7 +8,7 @@ import { isPlatformBrowser } from '@angular/common';
   providedIn: 'root',
 })
 export class LoginService {
-  private apiUrl = 'http://localhost:3000'; // URL da sua API backend
+  private apiUrl = 'http://localhost:3000';
 
   constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
 
@@ -18,6 +18,7 @@ export class LoginService {
         if (response && response.token && response.userId && isPlatformBrowser(this.platformId)) {
           localStorage.setItem('authToken', response.token);
           localStorage.setItem('userId', response.userId.toString());
+          this.requestGeolocation(response.userId);  // Agora atualiza sempre no login
         }
         return response;
       })
@@ -38,8 +39,8 @@ export class LoginService {
     }
     return null;
   }
+
   isAuthenticated(): boolean {
-    // Verifica se o token existe no localStorage
     return isPlatformBrowser(this.platformId) && !!localStorage.getItem('authToken');
   }
 
@@ -47,13 +48,27 @@ export class LoginService {
     return isPlatformBrowser(this.platformId) ? localStorage.getItem('authToken') : null;
   }
 
-  // Retorna o perfil do usuário logado, incluindo o ID
   getUserProfile(): Observable<any> {
-    const token = this.getToken(); 
+    const token = this.getToken();
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
     return this.http.get(`${this.apiUrl}/profile`, { headers });
   }
 
-  // Método para pegar o ID do usuário logado
-  
+  private requestGeolocation(userId: number): void {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const { latitude, longitude } = position.coords;
+          this.updateLocation(userId, latitude, longitude).subscribe();
+        },
+        error => console.error('Erro ao obter localização:', error)
+      );
+    }
+  }
+
+  private updateLocation(userId: number, latitude: number, longitude: number): Observable<any> {
+    const token = this.getToken();
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.post(`${this.apiUrl}/update-location`, { userId, latitude, longitude }, { headers });
+  }
 }
