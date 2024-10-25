@@ -1,7 +1,7 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, throwError} from 'rxjs';
+import { map, catchError} from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
@@ -48,11 +48,7 @@ export class LoginService {
     return isPlatformBrowser(this.platformId) ? localStorage.getItem('authToken') : null;
   }
 
-  getUserProfile(): Observable<any> {
-    const token = this.getToken();
-    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-    return this.http.get(`${this.apiUrl}/profile`, { headers });
-  }
+ 
 
   private requestGeolocation(userId: number): void {
     if (navigator.geolocation) {

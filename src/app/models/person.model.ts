@@ -6,11 +6,9 @@ export interface Person {
   images: string[];
   infos: string[];
   email: string;
-  nickname: string;
+  user_tag: string;
   password: string;
-  city: string;
-  state: string;
-  identification: string;
+  gender_identity: string;
   interest: string;
   ageRange: string;
   specificInterests: string;

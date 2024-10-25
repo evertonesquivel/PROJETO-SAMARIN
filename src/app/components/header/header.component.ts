@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { LoginService } from '../../services/auth/login.service';
+import { DataManagerService } from '../../services/user-data/data-manager.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
@@ -19,7 +20,9 @@ export class HeaderComponent implements OnInit {
   profileMenuOpen = false;
   navbarOpen = false;
 
-  constructor(private loginService: LoginService, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private loginService: LoginService,
+    private dataManagerService: DataManagerService,
+     private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit() {
     this.isAuthenticated = this.loginService.isAuthenticated();
@@ -29,9 +32,10 @@ export class HeaderComponent implements OnInit {
   }
 
   getUserProfile(): void {
-    this.loginService.getUserProfile().subscribe(
+    this.dataManagerService.getUserProfile().subscribe(
       (data) => {
         this.userProfile = data;
+        console.log(this.userProfile)
       },
       (error) => {
         console.error('Erro ao buscar o perfil do usuário', error);

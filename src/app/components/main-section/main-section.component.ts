@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginService } from '../../services/auth/login.service'; // Importa o LoginService
+import { DataManagerService } from '../../services/user-data/data-manager.service';
 
 @Component({
   selector: 'app-main-section',
@@ -24,6 +25,7 @@ export class MainSectionComponent implements OnInit {
   constructor(
     private mainSectionService: MainSectionService, 
     private loginService: LoginService, // Injetar o LoginService
+    private dataManagerService : DataManagerService,
     private router: Router
   ) {}
 
@@ -39,8 +41,9 @@ export class MainSectionComponent implements OnInit {
       console.error('Usuário não está logado ou ID não disponível');
       // Redirecionar para a página de login ou mostrar uma mensagem de erro
     }
-  }loadUsers(): void {
-    this.mainSectionService.getUsers().subscribe(
+  }
+  loadUsers(): void {
+    this.dataManagerService.getUsers().subscribe(
       (data) => {
         console.log('Dados de usuários obtidos:', data);
         this.users = data;
@@ -57,8 +60,6 @@ export class MainSectionComponent implements OnInit {
       }
     );
   }
-
-
 
   nextImage(): void {
     if (this.currentPerson && this.currentPerson.images.length > 0) {

@@ -3,16 +3,15 @@
     <div class="perfil-left">
       <img class="perfil-image" [src]="personCarregado.images[0]" alt="{{personCarregado.name}}">
       <p class="perfil-name">{{personCarregado.name}}</p>
-      <p class="perfil-nickname">{{"@" + personCarregado.nickname}}</p>
+      <p class="perfil-nickname">{{ "@" + personCarregado.user_tag }}</p>
     </div>
     <div class="perfil-right">
-      <p><strong>Idade:</strong> {{personCarregado.age}}</p>
-      <p><strong>Identificação:</strong> {{personCarregado.identification}}</p>
+      <p><strong>Idade:</strong> {{calculateAge(personCarregado.birth_date)}}</p>
+      <p><strong>Identificação:</strong> {{personCarregado.gender_identity}}</p>
       <p><strong>Interesse:</strong> {{personCarregado.interest}}</p>
-      <p><strong>Cidade:</strong> {{personCarregado.city}}</p>
-      <p><strong>Estado:</strong> {{personCarregado.state}}</p>
-      <p><strong>Interesses Específicos:</strong> {{personCarregado.specificInterests}}</p>
-  
+      <p><strong>Cidade:</strong> {{locationCarregado.city}}</p>
+      <p><strong>Estado:</strong> {{locationCarregado.state}}</p>
+      
       <div class="actions">
         <button class="like" (click)="like()">Like</button>
         <button class="dislike" (click)="dislike()">Dislike</button>
