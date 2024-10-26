@@ -11,6 +11,7 @@ import { Person } from '../../models/person.model';
 })
 export class DataManagerService {
   private apiUrl = 'http://localhost:3000';
+  private apiLocation = 'http://localhost:3000/location'
 
   constructor(
     private http: HttpClient,
@@ -38,6 +39,17 @@ export class DataManagerService {
       return this.http.get<Person>(`${this.apiUrl}/users/${id}`).pipe(
         catchError(error => {
           console.error('Erro ao buscar usuário por ID:', error);
+          return throwError(error);
+        })
+      );
+    }
+    getLocationUser (userId: number): Observable<any> {
+      const token = this.loginService.getToken(); // Obter o token do usuário logado
+      const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` });
+  
+      return this.http.post<any>(this.apiLocation, { id: userId }, { headers }).pipe(
+        catchError(error => {
+          console.error('Erro ao buscar localização do usuário:', error);
           return throwError(error);
         })
       );

@@ -28,17 +28,21 @@ export class PerfilPageComponent implements OnInit, OnDestroy {
     gender_identity: "",
     interest: "",
     ageRange: "",
-    specificInterests: "",
+    bio: "",
     birth_date : "",
 
   };
-  locationCarregado : Locations = {
+  locationCarregado: Locations = {
+    id: 0,
     city: "",
     state: "",
     country: "",
-    Users_id : 0,
-
-  }
+    latitude: 0,
+    longitude: 0,
+    users_id: 0,
+    created_at: "",
+    updated_at: ""
+  };
 
 
   selectedImage: string | null = null;
@@ -57,7 +61,33 @@ export class PerfilPageComponent implements OnInit, OnDestroy {
         this.loadUserById(id);// Aqui você já terá o objeto Person completo
       })
     );
+    this.getLocationUser(id); // Chama o método para obter a localização 
   }
+  getLocationUser (userId: number): void {
+    this.dataManagerService.getLocationUser (userId).subscribe(
+      (locationData) => {
+        this.updateLocationCarregado(locationData); // Atualiza o objeto locationCarregado
+      },
+      (error) => {
+        console.error('Erro ao obter localização do usuário:', error);
+      }
+    );
+  }
+  updateLocationCarregado(locationData: any): void {
+    this.locationCarregado = {
+      id: locationData.id,
+      city: locationData.city,
+      state: locationData.state,
+      country: locationData.country,
+      latitude: locationData.latitude,
+      longitude: locationData.longitude,
+      users_id: locationData.users_id,
+      created_at: locationData.created_at,
+      updated_at: locationData.updated_at
+    };
+    console.log('Localização Carregada:', this.locationCarregado); // Verifique os dados
+  }
+
 
   loadUserById(id:number):void {
      // Exemplo de ID, substitua pelo ID correto

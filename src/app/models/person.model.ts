@@ -11,7 +11,7 @@ export interface Person {
   gender_identity: string;
   interest: string;
   ageRange: string;
-  specificInterests: string;
+  bio: string;
 }
 
 
