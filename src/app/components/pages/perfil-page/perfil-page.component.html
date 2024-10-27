@@ -6,6 +6,7 @@
       <p class="perfil-nickname">{{ "@" + personCarregado.user_tag }}</p>
     </div>
     <div class="perfil-right">
+      <p><strong>Sexual Orientetion:</strong> {{personCarregado.sexualOrientation}}</p>
       <p><strong>Idade:</strong> {{calculateAge(personCarregado.birth_date)}}</p>
       <p><strong>Identificação:</strong> {{personCarregado.gender_identity}}</p>
       <p><strong>Interesse:</strong> {{personCarregado.interest}}</p>
@@ -24,7 +25,7 @@
   <div class="additional-section">
     <div class="interests-container">
       <h2>Interesses</h2>
-      <p>{{personCarregado.bio}}</p>
+      <p>{{personCarregado.specific_interests}}</p>
     </div>
     <div class="gallery-container">
       <h2>Galeria</h2>

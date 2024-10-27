@@ -28,7 +28,7 @@ export class MultiStepFormComponent implements OnInit {
   // Inicializa todos os formulários das etapas
   initializeForms() {
     this.step1Form = this.fb.group({
-      nome: ['', Validators.required],
+      name: ['', Validators.required],
       sobrenome: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       telefone: ['', Validators.required],

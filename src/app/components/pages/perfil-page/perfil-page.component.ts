@@ -20,16 +20,24 @@ export class PerfilPageComponent implements OnInit, OnDestroy {
     id: 0,
     name: "",
     age: 0,
+    birth_date: "", // Manter este campo se ainda for necessário
     images: [],
     infos: [],
     email: "",
     user_tag: "",
-    password: "",
     gender_identity: "",
     interest: "",
     ageRange: "",
     bio: "",
-    birth_date : "",
+    pronouns: "", // Novo campo para pronomes
+    sexualOrientation: "", // Novo campo para orientação sexual
+    genderIdentity: "", // Novo campo para identidade de gênero
+    personality: "", // Novo campo para personalidade
+    hobbies: "", // Novo campo para hobbies
+    min_age_interest: 0, // Novo campo para idade mínima de interesse
+    max_age_interest: 0, // Novo campo para idade máxima de interesse
+    specific_interests:"",
+  
 
   };
   locationCarregado: Locations = {
