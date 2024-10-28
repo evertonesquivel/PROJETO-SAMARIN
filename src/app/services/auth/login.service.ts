@@ -1,7 +1,7 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError} from 'rxjs';
-import { map, catchError} from 'rxjs/operators';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError, of } from 'rxjs';
+import { map, catchError, switchMap } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
@@ -15,10 +15,11 @@ export class LoginService {
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
       map((response: any) => {
-        if (response && response.token && response.userId && isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('authToken', response.token);
+        if (response && response.accessToken && response.refreshToken && response.userId && isPlatformBrowser(this.platformId)) {
+          localStorage.setItem('authToken', response.accessToken);
+          localStorage.setItem('refreshToken', response.refreshToken);
           localStorage.setItem('userId', response.userId.toString());
-          this.requestGeolocation(response.userId);  // Agora atualiza sempre no login
+          this.requestGeolocation(response.userId);
         }
         return response;
       })
@@ -27,9 +28,33 @@ export class LoginService {
 
   logout(): void {
     if (isPlatformBrowser(this.platformId)) {
+      const refreshToken = this.getRefreshToken();
+      if (refreshToken) {
+        this.http.post(`${this.apiUrl}/logout`, { refreshToken }).subscribe();
+      }
       localStorage.removeItem('authToken');
+      localStorage.removeItem('refreshToken');
       localStorage.removeItem('userId');
     }
+  }
+
+  refreshAccessToken(): Observable<string | null> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) return of(null);
+
+    return this.http.post(`${this.apiUrl}/refresh-token`, { refreshToken }).pipe(
+      map((response: any) => {
+        const newAccessToken = response.accessToken;
+        if (newAccessToken && isPlatformBrowser(this.platformId)) {
+          localStorage.setItem('authToken', newAccessToken);
+        }
+        return newAccessToken;
+      }),
+      catchError(() => {
+        this.logout();
+        return of(null);
+      })
+    );
   }
 
   getUserId(): number | null {
@@ -48,7 +73,9 @@ export class LoginService {
     return isPlatformBrowser(this.platformId) ? localStorage.getItem('authToken') : null;
   }
 
- 
+  private getRefreshToken(): string | null {
+    return isPlatformBrowser(this.platformId) ? localStorage.getItem('refreshToken') : null;
+  }
 
   private requestGeolocation(userId: number): void {
     if (navigator.geolocation) {
