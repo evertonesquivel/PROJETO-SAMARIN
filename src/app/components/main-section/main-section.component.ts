@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginService } from '../../services/auth/login.service'; // Importa o LoginService
 import { DataManagerService } from '../../services/user-data/data-manager.service';
+import { Pipe, PipeTransform } from '@angular/core';
+
 
 @Component({
   selector: 'app-main-section',
@@ -158,6 +160,13 @@ export class MainSectionComponent implements OnInit {
 
   getUserById(id: number): Person | undefined {
     return this.users.find(person => person.id === id);
+  }
+}@Pipe({
+  name: 'stringToArray'
+})
+export class StringToArrayPipe implements PipeTransform {
+  transform(value: string, separator: string = ','): string[] {
+    return value ? value.split(separator).map(item => item.trim()) : [];
   }
 }
 

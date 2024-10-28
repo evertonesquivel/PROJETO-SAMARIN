@@ -12,9 +12,9 @@ export interface Person {
   interest: string;
   ageRange: string;
   bio: string;
+  profession : string;
   pronouns: string; // Novo campo para pronomes
-  sexualOrientation: string; // Novo campo para orientação sexual
-  genderIdentity: string; // Novo campo para identidade de gênero
+  sexual_orientation: string; // Novo campo para orientação sexual
   personality: string; // Novo campo para personalidade
   hobbies: string; // Novo campo para hobbies
   min_age_interest: number; // Novo campo para idade mínima de interesse
