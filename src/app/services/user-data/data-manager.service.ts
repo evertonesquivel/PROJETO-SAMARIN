@@ -20,17 +20,17 @@ export class DataManagerService {
     getUserProfile(): Observable<any> {
       const token = this.loginService.getToken();
       const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+      console.log("Token enviado na requisição:", token);
+   
       return this.http.get(`${this.apiUrl}/profile`, { headers }).pipe(
-        map((response: any) => {
-          // Acessando o primeiro usuário do array
-          return response[0]; // Aqui você pega o primeiro objeto do array
-        }),
+        map((response: any) => response[0]),
         catchError(error => {
           console.error('Erro ao buscar perfil do usuário:', error);
           return throwError(error);
         })
       );
-    }
+   }
+   
     getUsers(): Observable<Person[]> {
       return this.http.get<Person[]>(`${this.apiUrl}/users`);
     }

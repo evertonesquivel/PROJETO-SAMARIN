@@ -24,10 +24,16 @@ export class AppComponent {
     this.checkLoginStatus();
   
   }
+  ngOnInit(): void {
+    this.loginService.initializeApp().subscribe(() => {
+      this.checkLoginStatus();
+    });
+  }
   checkLoginStatus(): void {
     if (this.loginService.isAuthenticated()) {
       // Se o usuário estiver autenticado, redireciona para /home
       this.router.navigate(['/home']);
+      
     } else {
       // Caso contrário, redireciona para a tela inicial
       this.router.navigate(['/']);
