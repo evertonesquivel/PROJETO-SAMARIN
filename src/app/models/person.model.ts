@@ -19,6 +19,7 @@ export interface Person {
   hobbies: string; // Novo campo para hobbies
   min_age_interest: number; // Novo campo para idade mínima de interesse
   max_age_interest: number; // Novo campo para idade máxima de interesse
+  relationship_types : string;
 }
 
 

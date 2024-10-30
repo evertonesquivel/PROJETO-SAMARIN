@@ -36,7 +36,9 @@ export class PerfilPageComponent implements OnInit, OnDestroy {
     hobbies: "",
     min_age_interest: 0,
     max_age_interest: 0,
-    specific_interests: ""
+    specific_interests: "",
+    relationship_types : "",
+
   };
   locationCarregado: Locations = {
     id: 0,

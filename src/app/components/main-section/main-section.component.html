@@ -16,6 +16,7 @@
         <div class="badges">
           <span class="badge" >{{ currentPerson?.sexual_orientation}}</span>
           <span class="badge" >{{ currentPerson?.gender_identity}}</span>
+          <span class="badge" >{{ currentPerson?.relationship_types}}</span>
           <span class="badge" >{{ currentPerson?.profession}}</span>
           <span class="badge" *ngFor="let interest of currentPerson?.interest">
             {{ interest }}
