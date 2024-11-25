@@ -44,14 +44,18 @@
           A senha é forte!
       </div>
       
-        
+      </div>
+      <div class="rght">
         <label for="confirm_password">Confirmar Senha</label>
         <input type="password" formControlName="confirm_password"  placeholder="Confirmar Senha"/>
         <p *ngIf="!validatePasswordMatch() && step1Form.get('confirm_password')?.touched" style="color: red;">
           As senhas não coincidem.
         </p>
       </div>
-      <button type="button" (click)="nextStep()" [disabled]="!step1Form.valid">Continuar</button>
+      <div class="center">
+        
+        <button type="button" (click)="nextStep()" [disabled]="!step1Form.valid">Continuar</button>
+      </div>
     </form>
   </div>
 
