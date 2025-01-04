@@ -77,7 +77,7 @@ export class MultiStepFormComponent implements OnInit {
     });
 
     this.step2Form = this.fb.group({
-      birth_date: ['', Validators.required],
+      birth_date: ['', [Validators.required, this.minimumAgeValidator(18)]],
       state: ['', Validators.required],
       city: ['', Validators.required],
       profession: ['', Validators.required],
@@ -132,8 +132,31 @@ export class MultiStepFormComponent implements OnInit {
     }
     if (minAge > maxAge) {
       alert("A idade mínima não pode ser maior que a idade máxima.");
+    }if(maxAge < minAge){
+      alert("A idade máxima não pode ser menor que a idade mínima.");
+
     }
   }
+  minimumAgeValidator(minAge: number) {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const inputDate = new Date(control.value);
+      if (isNaN(inputDate.getTime())) {
+        // Retorna erro se o valor não for uma data válida
+        return { invalidDate: true };
+      }
+  
+      const today = new Date();
+      const age = today.getFullYear() - inputDate.getFullYear();
+      const hasBirthdayPassed =
+        today.getMonth() > inputDate.getMonth() ||
+        (today.getMonth() === inputDate.getMonth() && today.getDate() >= inputDate.getDate());
+  
+      const isOldEnough = hasBirthdayPassed ? age >= minAge : age - 1 >= minAge;
+  
+      return isOldEnough ? null : { minimumAge: { requiredAge: minAge, actualAge: age } };
+    };
+  }
+  
 
   validateStringFields() {
     const fieldsToCheck = ['name', 'surname', 'city', 'profession'];

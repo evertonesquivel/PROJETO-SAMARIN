@@ -24,10 +24,10 @@
       </div>
 
       <!-- Botão para ver mensagens -->
-      <button class="message-btn" (click)="goToMessages()">Ver Mensagens</button>
+      <button class="message-btn" (click)="goToMessages()"></button>
 
       <!-- Botão do menu -->
-      <button class="menu-btn" (click)="toggleNavbar()">Menu</button>
+      <button class="menu-btn" (click)="toggleNavbar()"></button>
       <div *ngIf="navbarOpen" class="navbar">
         <ul>
           <li (click)="logout()">Logout</li>

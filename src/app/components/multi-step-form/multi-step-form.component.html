@@ -65,7 +65,21 @@
     <div class="form-group">
       <label>Data de Nascimento</label>
       <input formControlName="birth_date" type="date" />
-    </div>
+      <div
+        *ngIf="
+          step2Form.get('birth_date')?.touched &&
+          step2Form.get('birth_date')?.errors as errors
+        "
+        class="error-message"
+      >
+        <div *ngIf="errors['minimumAge']">
+          Você deve ter pelo menos 18 anos para se registrar.
+        </div>
+        <div *ngIf="errors['invalidDate']">
+          Por favor, insira uma data válida.
+        </div>
+      </div>
+    </div>    
     <div class="form-group">
       <label>Estado</label>
       <input formControlName="state" type="text" />

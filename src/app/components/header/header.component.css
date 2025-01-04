@@ -65,15 +65,18 @@ header {
   border-radius: 10px;
   text-align: center;
 }
-
+.message-btn, .menu-btn{
+  background-size: contain; 
+  height: 30px;
+  width: 30px;
+}
 .message-btn {
-  /* Estilo do botão de mensagens */
+  background-image: url("../../../assets/show\ messages.svg");
 }
 
 .menu-btn {
-  /* Estilo do botão de menu */
+  background-image: url("../../../assets/tools.svg");
 }
-
 .navbar {
   position: absolute;
   top: 70px; /* Ajuste se necessário para a posição correta abaixo do header */

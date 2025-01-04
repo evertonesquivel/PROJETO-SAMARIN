@@ -3,8 +3,8 @@
     <div class="content__left">
       <div class="carousel">
         <img [src]="currentImage" alt="Profile picture">
-        <button class="prev" (click)="prevImage()">‹</button>
-        <button class="next" (click)="nextImage()">›</button>
+        <button class="prev" (click)="prevImage()"></button>
+        <button class="next" (click)="nextImage()"></button>
       </div>
     </div>
     <div class="content__right">
@@ -25,12 +25,10 @@
         </div>
       </div>
       <div class="actions">
-        <button class="like" (click)="like()">Like</button>
-        <button class="dislike" (click)="dislike()">X</button>
-        <button  (click)="navigateToProfile(users[currentIndex]?.id ?? 0)" class="view-profile">
-          Ver Perfil
-        </button>
-        <button class="send-message">Mandar mensagem</button>
+        <button class="like" (click)="like()"></button>
+        <button class="dislike" (click)="dislike()"></button>
+        <button  (click)="navigateToProfile(users[currentIndex]?.id ?? 0)" class="view-profile"></button>
+        <button class="send-message"></button>
       </div>
     </div>
   </div>
