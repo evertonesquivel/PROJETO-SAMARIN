@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'; 
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable,throwError, catchError } from 'rxjs';
 import { Person } from '../../models/person.model'; 
 import { LoginService } from '../auth/login.service'; 
 
@@ -12,14 +12,6 @@ export class MainSectionService {
   private urlLike ='http://localhost:3000/like';
 
   constructor(private http: HttpClient, private loginService: LoginService) {}
-
-  getUsers(): Observable<Person[]> {
-    return this.http.get<Person[]>(this.apiUrl);
-  }
-
-  getUserById(id: number): Observable<Person> {
-    return this.http.get<Person>(`${this.apiUrl}/${id}`);
-  }
 
   likeOrDislike(userId: number, targetUserId: number, like: boolean): Observable<any> {
     const body = { userId, targetUserId, like };

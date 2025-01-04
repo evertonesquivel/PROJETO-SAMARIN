@@ -47,19 +47,25 @@ justify-content: center;
 }
 
 .prev, .next {
+  background-color: transparent;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   font-size: 36px;
   cursor: pointer;
+  background-size: contain;
+  height: 30px;
+  width: 30px;
 }
 
 .prev {
   left: 20px;
+  background-image: url("../../../assets/left.svg");
 }
 
 .next {
   right: 20px;
+  background-image: url("../../../assets/right.svg");
 }
 
 .profile-info {
@@ -71,17 +77,17 @@ justify-content: center;
 .badges {
   display: flex;
   flex-wrap: wrap;
-  margin-top: 20px;
+  margin-top: 18px;
 }
 
 .badge {
   background-color: #F9EAEE;
   border: 1px solid #8C3A60;
   border-radius: 20px;
-  padding: 10px 20px;
+  padding: 8px 18px;
   margin: 10px;
   color: #12036E;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .actions {
@@ -94,30 +100,31 @@ justify-content: center;
 }
 
 .like, .dislike, .view-profile, .send-message {
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   border: none;
   border-radius: 50%;
   background-color: #fff;
   cursor: pointer;
+  background-size: contain; 
 }
 
 .like {
-  background-color: #007bff;
-  color: #fff;
+  background-image: url("../../../assets/curtir.svg");
+  
 }
 
 .dislike {
-  background-color: #ff0000;
-  color: #fff;
+ 
+  background-image: url("../../../assets/dimiss.svg");
 }
 
 .view-profile {
-  background-color: #337ab7;
-  color: #fff;
+  background-image: url("../../../assets/show_perfil.svg");
+  
 }
 
 .send-message {
-  background-color: #337ab7;
-  color: #fff;
+  background-image: url("../../../assets/rename.svg");
+ 
 }

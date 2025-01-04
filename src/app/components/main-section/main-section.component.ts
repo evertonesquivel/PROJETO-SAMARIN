@@ -5,6 +5,9 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginService } from '../../services/auth/login.service'; // Importa o LoginService
+import { DataManagerService } from '../../services/user-data/data-manager.service';
+import { Pipe, PipeTransform } from '@angular/core';
+
 
 @Component({
   selector: 'app-main-section',
@@ -24,6 +27,7 @@ export class MainSectionComponent implements OnInit {
   constructor(
     private mainSectionService: MainSectionService, 
     private loginService: LoginService, // Injetar o LoginService
+    private dataManagerService : DataManagerService,
     private router: Router
   ) {}
 
@@ -39,8 +43,9 @@ export class MainSectionComponent implements OnInit {
       console.error('Usuário não está logado ou ID não disponível');
       // Redirecionar para a página de login ou mostrar uma mensagem de erro
     }
-  }loadUsers(): void {
-    this.mainSectionService.getUsers().subscribe(
+  }
+  loadUsers(): void {
+    this.dataManagerService.getUsers().subscribe(
       (data) => {
         console.log('Dados de usuários obtidos:', data);
         this.users = data;
@@ -57,8 +62,6 @@ export class MainSectionComponent implements OnInit {
       }
     );
   }
-
-
 
   nextImage(): void {
     if (this.currentPerson && this.currentPerson.images.length > 0) {
@@ -157,6 +160,13 @@ export class MainSectionComponent implements OnInit {
 
   getUserById(id: number): Person | undefined {
     return this.users.find(person => person.id === id);
+  }
+}@Pipe({
+  name: 'stringToArray'
+})
+export class StringToArrayPipe implements PipeTransform {
+  transform(value: string, separator: string = ','): string[] {
+    return value ? value.split(separator).map(item => item.trim()) : [];
   }
 }
 

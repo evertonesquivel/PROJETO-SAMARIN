@@ -17,17 +17,17 @@
           <img *ngIf="userProfile?.images?.length" [src]="userProfile.images[0]" alt="Foto de perfil">
           <p>{{ userProfile?.name }}</p>
           <p>{{ userProfile?.email }}</p>
-          <p>{{ "@" + userProfile?.nickname }}</p>
+          <p>{{ "@" + userProfile?.user_tag }}</p>
         </div>
         <button (click)="goToMessages()">Ver Mensagens</button>
         <button (click)="logout()">Logout</button>
       </div>
 
       <!-- Botão para ver mensagens -->
-      <button class="message-btn" (click)="goToMessages()">Ver Mensagens</button>
+      <button class="message-btn" (click)="goToMessages()"></button>
 
       <!-- Botão do menu -->
-      <button class="menu-btn" (click)="toggleNavbar()">Menu</button>
+      <button class="menu-btn" (click)="toggleNavbar()"></button>
       <div *ngIf="navbarOpen" class="navbar">
         <ul>
           <li (click)="logout()">Logout</li>

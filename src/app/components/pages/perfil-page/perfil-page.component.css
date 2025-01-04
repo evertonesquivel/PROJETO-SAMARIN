@@ -39,27 +39,30 @@
 }
 
 .like, .dislike, .send-message {
-    width: 70px;
-    height: 70px;
+    width: 80px;
+    height: 80px;
     border: none;
     border-radius: 40px; /* Botões redondos */
     cursor: pointer;
     font-size: 13px;
     color: #fff;
+    background-size: contain;
 }
 
 .like {
-    background-color: #007bff;
-}
-
+    background-image: url("../../../../assets/curtir.svg");
+    
+  }
+  
 .dislike {
-    background-color: #ff0000;
+    
+    background-image: url("../../../../assets/dimiss.svg");
 }
-
+  
 .send-message {
-    background-color: #28a745;
+    background-image: url("../../../../assets/rename.svg");
+   
 }
-
 .additional-section {
     display: flex;
     justify-content: space-between;

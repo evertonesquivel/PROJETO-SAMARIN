@@ -1,6 +1,4 @@
 <div class="form-container">
- 
-
   <div *ngIf="currentStep === 0">
     <div class="container__texts">
       <h2>Cadastro de novos usuários</h2>
@@ -9,111 +7,189 @@
     <form [formGroup]="step1Form">
       <div class="form-group">
         <label>Nome</label>
-        <input formControlName="nome" type="text" />
+        <input formControlName="name" type="text" />
       </div>
       <div class="form-group">
         <label>Sobrenome</label>
-        <input formControlName="sobrenome" type="text" />
+        <input formControlName="surname" type="text" />
       </div>
       <div class="form-group">
         <label>Email</label>
         <input formControlName="email" type="email" />
       </div>
-      <div class="form-group">
-        <label>Telefone</label>
-        <input formControlName="telefone" type="text" />
+      <div>
+        <label for="phone">Telefone:</label>
+        <input formControlName="phone" id="phone" placeholder="(00) 00000-0000">
+        <div *ngIf="step1Form.get('phone')?.invalid && step1Form.get('phone')?.touched" class="error">
+          Número de telefone inválido. Formato esperado: (XX) XXXXX-XXXX
+        </div>
       </div>
-      <div class="form-group">
-        <label>Senha</label>
-        <input formControlName="senha" type="password" />
+      <div [formGroup]="step1Form">
+        <label for="password">Senha</label>
+        <input type="password" formControlName="password" />
+        
+        <div *ngIf="!passwordStrength.minLength" class="alert alert-danger">
+          A senha deve ter pelo menos 8 caracteres.
       </div>
-      <div class="form-group">
-        <label>Confirmar Senha</label>
-        <input formControlName="confirmarSenha" type="password" />
+      <div *ngIf="!passwordStrength.hasUpperCase" class="alert alert-danger">
+          A senha deve conter pelo menos uma letra maiúscula.
       </div>
-      <button type="button" (click)="nextStep()" [disabled]="!step1Form.valid">Continuar</button>
+      <div *ngIf="!passwordStrength.hasNumber" class="alert alert-danger">
+          A senha deve conter pelo menos um número.
+      </div>
+      <div *ngIf="!passwordStrength.hasSpecialChar" class="alert alert-danger">
+          A senha deve conter pelo menos um caractere especial (&#64;$!%*?&) .
+      </div>
+      <div *ngIf="passwordStrength.minLength && passwordStrength.hasUpperCase && passwordStrength.hasNumber && passwordStrength.hasSpecialChar" class="alert alert-success">
+          A senha é forte!
+      </div>
+      
+      </div>
+      <div class="rght">
+        <label for="confirm_password">Confirmar Senha</label>
+        <input type="password" formControlName="confirm_password"  placeholder="Confirmar Senha"/>
+        <p *ngIf="!validatePasswordMatch() && step1Form.get('confirm_password')?.touched" style="color: red;">
+          As senhas não coincidem.
+        </p>
+      </div>
+      <div class="center">
+        
+        <button type="button" (click)="nextStep()" [disabled]="!step1Form.valid">Continuar</button>
+      </div>
     </form>
   </div>
 
-  <div *ngIf="currentStep === 1">
-    <form [formGroup]="step2Form">
-      <div class="form-group">
-        <label>Data de Nascimento</label>
-        <input formControlName="dataNascimento" type="date" />
+ <!-- Etapa 2 -->
+<div *ngIf="currentStep === 1">
+  <form [formGroup]="step2Form">
+    <div class="form-group">
+      <label>Data de Nascimento</label>
+      <input formControlName="birth_date" type="date" />
+      <div
+        *ngIf="
+          step2Form.get('birth_date')?.touched &&
+          step2Form.get('birth_date')?.errors as errors
+        "
+        class="error-message"
+      >
+        <div *ngIf="errors['minimumAge']">
+          Você deve ter pelo menos 18 anos para se registrar.
+        </div>
+        <div *ngIf="errors['invalidDate']">
+          Por favor, insira uma data válida.
+        </div>
       </div>
-      <div class="form-group">
-        <label>Estado</label>
-        <input formControlName="estado" type="text" />
-      </div>
-      <div class="form-group">
-        <label>Cidade</label>
-        <input formControlName="cidade" type="text" />
-      </div>
-      <div class="form-group">
-        <label>Profissão</label>
-        <input formControlName="profissao" type="text" />
-      </div>
-      <div class="form-group">
-        <label>Pronomes</label>
-        <input formControlName="pronomes" type="text" />
-      </div>
-      <div class="form-group">
-        <label>Identificação de Gênero</label>
-        <input formControlName="identificacaoGenero" type="text" />
-      </div>
-      <button type="button" (click)="previousStep()">Voltar</button>
-      <button type="button" (click)="nextStep()" [disabled]="!step2Form.valid">Continuar</button>
-    </form>
-  </div>
+    </div>    
+    <div class="form-group">
+      <label>Estado</label>
+      <input formControlName="state" type="text" />
+    </div>
+    <div class="form-group">
+      <label>Cidade</label>
+      <input formControlName="city" type="text" />
+    </div>
+    <div class="form-group">
+      <label>Profissão</label>
+      <input formControlName="profession" type="text" />
+    </div>
+    <div class="form-group">
+      <label>Identificação de Gênero</label>
+      <select formControlName="gender_identity">
+        <option *ngFor="let gender of identificacaoGeneroOptions" [value]="gender">{{ gender}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Orientação Sexual</label>
+      <select formControlName="sexual_orientation">
+        <option *ngFor="let orientation of orientacaoSexualOptions" [value]="orientation">{{ orientation }}</option>
+      </select>
+    </div>
+    <button type="button" (click)="previousStep()">Voltar</button>
+    <button type="button" (click)="nextStep()" [disabled]="!step2Form.valid">Continuar</button>
+  </form>
+</div>
 
-  <div *ngIf="currentStep === 2">
-    <form [formGroup]="step3Form">
-      <div class="form-group">
-        <label>Nickname</label>
-        <input formControlName="nickname" type="text" />
-      </div>
-      <div class="form-group">
-        <label>Interesse</label>
-        <input formControlName="interesse" type="text" />
-      </div>
-      <div class="form-group">
-        <label>Faixa de Idade</label>
-        <input formControlName="faixaIdade" type="number" min="18" />
-      </div>
-      <div class="form-group">
-        <label>Personalidade</label>
-        <select formControlName="personalidade">
-          <option *ngFor="let trait of personalidadeOptions" [value]="trait">{{ trait }}</option>
-        </select>
-      </div>
-      <button type="button" (click)="previousStep()">Voltar</button>
-      <button type="button" (click)="nextStep()" [disabled]="!step3Form.valid">Continuar</button>
-    </form>
-  </div>
+<!-- Etapa 3 -->
+<div *ngIf="currentStep === 2">
+  <form [formGroup]="step3Form">
+    <div class="form-group">
+      <label>Nickname</label>
+      <input formControlName="user_tag" type="text" />
+    </div>
+    <div class="form-group">
+      <label>Faixa de Interesse Mínima</label>
+      <input formControlName="min_age_interest" type="number" placeholder="Mínimo" (change)="validateAgeRange()" />
+      
+      
+    </div>
+    <div class="form-group">
+      <label>Faixa de Interesse Máxima</label>
+      <input formControlName="max_age_interest" type="number" placeholder="Máximo" (change)="validateAgeRange()" />
+    </div>
+    <div class="form-group">
+      <label>Personalidade</label>
+      <select formControlName="personality">
+        <option *ngFor="let trait of personalidadeOptions" [value]="trait">{{ trait }}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Tipo de Relacionamento</label>
+      <select formControlName="relationship_types">
+        <option *ngFor="let relationship of tipoRelacionamentoOptions" [value]="relationship">{{ relationship }}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Pronomes</label>
+      <select formControlName="pronouns">
+        <option *ngFor="let prononous of pronomesOptions" [value]="prononous">{{ prononous}}</option>
+      </select>
+    </div>
+    <button type="button" (click)="previousStep()">Voltar</button>
+    <button type="button" (click)="nextStep()" [disabled]="!step3Form.valid">Continuar</button>
+  </form>
+</div>
 
-  <div *ngIf="currentStep === 3">
-    <form [formGroup]="step4Form">
-      <div class="form-group">
-        <label>Hobbies</label>
-        <input formControlName="hobbies" type="text" />
-      </div>
-      <div class="form-group">
-        <label>Descreva mais sobre você e seus interesses</label>
-        <textarea formControlName="descricao"></textarea>
-      </div>
-      <button type="button" (click)="previousStep()">Voltar</button>
-      <button type="button" (click)="nextStep()" [disabled]="!step4Form.valid">Continuar</button>
-    </form>
+<div *ngIf="currentStep === 3">
+  <form [formGroup]="step4Form">
+    <div class="form-group">
+      <label>Hobbies</label>
+      <input formControlName="hobbies" type="text" />
+    </div>
+    <div class="form-group">
+      <label>Descrição</label>
+      <textarea formControlName="specific_interests"></textarea>
+    </div>
+    <button type="button" (click)="previousStep()">Voltar</button>
+    <button type="button" (click)="nextStep()" [disabled]="!step4Form.valid">Continuar</button>
+  </form>
+</div>
+<div *ngIf="currentStep === 4">
+  <form [formGroup]="step5Form">
+    <div class="form-group">
+      <label>Imagem de Perfil</label>
+      <input formControlName="imagemPerfil" type="file" (change)="onFileSelected($event, 0)" />
+    </div>
+    <button type="button" (click)="previousStep()">Voltar</button>
+    <button type="button" (click)="nextStep()" [disabled]="!step5Form.valid">Confirmar</button>
+  </form>
+</div>
+<!-- Etapa 6 -->
+<div *ngIf="currentStep === 5">
+  <form [formGroup]="step6Form">
+    <div class="form-group">
+      <label>Imagem de Perfil</label>
+      <img *ngIf="imagemPerfil" [src]="getImagePath(imagemPerfil.name)" alt="Imagem de Perfil" />
+    </div>
+    <div class="form-group" *ngFor="let photo of images; let i = index">
+      <label class="label-file" for="file{{ i }}">Foto {{ i + 1 }}</label>
+      <input type="file" id="file{{ i }}" class="input-file" (change)="onFileSelected($event, i)" />
+      <img *ngIf="photo" [src]="getImagePath(photo.name)" alt="Pré-visualização" class="preview-image" />
   </div>
-
-  <div *ngIf="currentStep === 4">
-    <form [formGroup]="step5Form">
-      <div class="form-group">
-        <label>Imagem de Perfil</label>
-        <input formControlName="imagemPerfil" type="file" />
-      </div>
-      <button type="button" (click)="previousStep()">Voltar</button>
-      <button type="button" (click)="submitForm()" [disabled]="!step5Form.valid">Confirmar</button>
-    </form>
-  </div>
+    <button type="button" (click)="previousStep()">Voltar</button>
+    <button type="button" (click)="submitForm()" [disabled]="!isPhotoUploadValid()">Confirmar</button>
+  </form>
+</div>
+<div *ngIf="showLocationMessage" class="alert alert-info">
+  Sua localização está sendo solicitada para personalizar sua experiência.
+</div>
 </div>
