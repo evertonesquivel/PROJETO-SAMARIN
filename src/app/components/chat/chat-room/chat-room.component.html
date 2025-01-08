@@ -1,0 +1,21 @@
+<!-- chat-room.component.html -->
+<div class="chat-room">
+  <!-- Exibição de mensagens -->
+  <div class="messages">
+    <!-- Componente de exibição de mensagem -->
+    <ng-container *ngIf="messages && messages.length; else noMessages">
+      <app-chat-message
+        *ngFor="let message of messages"
+        [message]="message">
+      </app-chat-message>
+    </ng-container>
+    
+    <!-- Mensagem quando não há mensagens -->
+    <ng-template #noMessages>
+      <p class="no-messages">Nenhuma mensagem disponível no momento.</p>
+    </ng-template>
+  </div>
+
+  <!-- Componente para enviar mensagens -->
+  <app-message-input (sendMessage)="sendMessageToParent($event)"></app-message-input>
+</div>
