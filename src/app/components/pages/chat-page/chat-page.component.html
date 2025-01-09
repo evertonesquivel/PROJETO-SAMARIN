@@ -1,14 +1,7 @@
 <div class="chat-page">
   <div class="chat-sidebar">
-    <div
-    class="contact-item"
-    *ngFor="let contact of contacts"
-    (click)="onSelectChatRoom(contact.id)"
-    [class.active]="selectedChatRoom?.id === contact.id"
-  >
-    <p class="contact-name">{{ contact.name }}</p>
-    <p class="last-message">{{ contact.lastMessage }}</p>
-  </div>
+    <!-- Passa o evento para o método de seleção do chat -->
+    <app-chat-list (chatRoomSelected)="onSelectChatRoom($event)"></app-chat-list>
   </div>
 
   <div class="chat-main">

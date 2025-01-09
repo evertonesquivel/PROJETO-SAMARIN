@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatService } from '../../../services/chat/chat.service';
 import { ChatRoomComponent } from "../../chat/chat-room/chat-room.component";
+import { ChatListComponent } from '../../chat/chat-list/chat-list.component';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,13 +9,19 @@ import { CommonModule } from '@angular/common';
   templateUrl: './chat-page.component.html',
   styleUrls: ['./chat-page.component.css'],
   standalone:true,
-  imports : [ChatRoomComponent, CommonModule],
+  imports : [ChatRoomComponent, CommonModule, ChatListComponent],
 })
 export class ChatPageComponent implements OnInit {
   contacts: any[] = []; // Lista de contatos/conversas
   selectedChatRoom: any = null; // ChatRoom selecionado
   messages: any[] = []; // Mensagens carregadas
   userId: number = 0; // ID do usuário logado
+  selectedChatRoomId: string = ''; // Guarda o ID do chat selecionado
+
+  onChatRoomSelected(chatRoomId: string): void {
+    this.selectedChatRoomId = chatRoomId; // Atualiza o ID selecionado
+  }
+
 
   constructor(private chatService: ChatService) {}
 
@@ -57,7 +64,7 @@ export class ChatPageComponent implements OnInit {
     }
   
     // Busca o contato correspondente ao chatRoomId
-    let selectedContact:  any;
+    let selectedContact: any;
     for (const contact of this.contacts) {
       if (contact.id === Number(chatRoomId)) {
         selectedContact = contact;
@@ -87,6 +94,7 @@ export class ChatPageComponent implements OnInit {
       }
     );
   }
+  
   // Envia uma mensagem
   onSendMessage(messageContent: string): void {
     if (!this.selectedChatRoom || !messageContent.trim()) {
