@@ -98,19 +98,25 @@ export class ChatPageComponent implements OnInit {
   // Envia uma mensagem
   onSendMessage(messageContent: string): void {
     if (!this.selectedChatRoom || !messageContent.trim()) {
-      return; // Nenhuma sala selecionada ou mensagem vazia
+      console.error('Erro: selectedChatRoom está undefined ou mensagem vazia');
+      return;
     }
-
-    const receiverId = this.selectedChatRoom.userId; // ID do destinatário
-
-    this.chatService.sendMessage(this.selectedChatRoom.id, messageContent, receiverId).subscribe(
-      (newMessage) => {
-        this.messages.push(newMessage); // Atualiza localmente
-        this.chatService.sendMessageWebSocket(this.selectedChatRoom.id, messageContent); // Envia via WebSocket
-      },
-      (error) => {
-        console.error('Erro ao enviar mensagem:', error);
-      }
+  
+    const receiverId = this.selectedChatRoom.id; // ID do destinatário
+    const senderId = this.userId; // ID do remetente (usuário logado)
+    const chatRoomId = this.selectedChatRoom.id; // ID da sala de chat
+  
+    if (!receiverId || !senderId || !chatRoomId) {
+      console.error('Erro: receiverId, senderId ou chatRoomId está undefined');
+      return;
+    }
+  
+    // Envia a mensagem via WebSocket (ou HTTP como fallback)
+    this.chatService.sendMessageWebSocket(
+      chatRoomId.toString(),
+      messageContent,
+      senderId.toString(),
+      receiverId.toString()
     );
   }
 }

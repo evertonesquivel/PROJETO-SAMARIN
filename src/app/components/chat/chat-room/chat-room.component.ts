@@ -82,12 +82,10 @@ export class ChatRoomComponent implements OnInit {
   }
   
   // Envia a mensagem para o componente pai
-  sendMessageToParent(event: any): void {
-    const message = event.target.value; // Aqui capturamos a string de `newMessage` do evento
+  sendMessageToParent(message: string): void {
     if (message.trim() && this.chatRoom?.id && this.userId) {
       // Emite a mensagem para o componente pai
-      this.sendMessage.emit(message); 
-      this.newMessage = ''; // Limpa o campo de entrada após o envio
+      this.sendMessage.emit(message);
     } else {
       console.warn('Mensagem vazia ou sala de chat inválida.');
     }

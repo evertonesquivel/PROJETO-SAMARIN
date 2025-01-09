@@ -77,15 +77,21 @@ export class ChatService {
   }
 
   // Enviar uma mensagem pelo WebSocket
-  sendMessageWebSocket(chatRoomId: string, message: string): void {
+  sendMessageWebSocket(chatRoomId: string, message: string, senderId: string, receiverId: string): void {
     if (this.socket && this.socket.connected) {
-      const payload = { chatRoomId, content: message };
+      // Monta o payload com o formato correto
+      const payload = {
+        chatRoomId,
+        content: { text: message }, // Formato esperado pelo backend
+        senderId,
+        receiverId,
+      };
       this.socket.emit('sendMessage', payload);
     } else {
       console.warn('WebSocket desconectado. Tentando enviar via HTTP...');
-      this.sendMessage(chatRoomId, message, '').subscribe(
-        response => console.log('Mensagem enviada via HTTP:', response),
-        error => console.error('Erro ao enviar mensagem via HTTP:', error)
+      this.sendMessage(chatRoomId, { text: message }, senderId, receiverId).subscribe(
+        (response) => console.log('Mensagem enviada via HTTP:', response),
+        (error) => console.error('Erro ao enviar mensagem via HTTP:', error)
       );
     }
   }
@@ -123,9 +129,22 @@ export class ChatService {
   }
 
   // Enviar uma mensagem para um chat room via HTTP
-  sendMessage(chatRoomId: string, message: string, receiverId: string): Observable<any> {
-    const payload = { chatRoomId, content: message, receiverId };
-    return this.http.post<any>(`${this.apiUrl}/messages`, payload, {
+  sendMessage(chatRoomId: string, content: { text: string }, senderId: string, receiverId: string): Observable<any> {
+
+  
+  
+    console.log('Enviando mensagem para o backend:');
+    console.log('chatRoomId:', chatRoomId);
+    console.log('message:', content);
+    console.log('receiverId:', receiverId);
+  
+    if (!receiverId) {
+      console.error('Erro: receiverId está undefined');
+      return throwError(() => new Error('receiverId está undefined'));
+    }
+  
+    const payload = { content: content, chatRoomId, receiverId };
+    return this.http.post<any>(`${this.apiUrl}/send`, payload, {
       headers: this.getAuthHeaders(),
     }).pipe(
       catchError(error => {
@@ -134,7 +153,6 @@ export class ChatService {
       })
     );
   }
-
   // Atualizar lista de mensagens local
   updateMessagesLocally(newMessage: any): void {
     this.messagesSubject.next(newMessage); // Notifica a aplicação
