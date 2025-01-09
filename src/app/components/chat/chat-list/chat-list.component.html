@@ -1,15 +1,14 @@
 <div class="chat-list">
-    <div *ngIf="!conversations.length" class="no-conversations">
-      Nenhuma conversa encontrada.
-    </div>
-    <div *ngFor="let conversation of conversations" class="chat-item" (click)="onSelectConversation(conversation.chatRoomId)">
-      <div class="chat-item-info">
-        <img class="profile-image" [src]="conversation.profileImage || '/assets/default-profile.png'" alt="Foto de perfil" />
-        <div class="chat-item-details">
-          <h4 class="chat-name">{{ conversation.name }}</h4>
-          <p class="last-message">{{ conversation.lastMessage || 'Nenhuma mensagem' }}</p>
-        </div>
+  <div *ngIf="!conversations.length" class="no-conversations">
+    Nenhuma conversa encontrada.
+  </div>
+  <div *ngFor="let conversation of conversations" class="chat-item" (click)="onSelectConversation(conversation.chatRoomId)">
+    <div class="chat-item-info">
+      <img class="profile-image" [src]="conversation.profileImage || '/assets/default-profile.png'" alt="Foto de perfil" />
+      <div class="chat-item-details">
+        <h4 class="chat-name">{{ conversation.name }}</h4>
+        <p class="last-message">{{ conversation.lastMessage || 'Nenhuma mensagem' }}</p>
       </div>
     </div>
   </div>
-  
+</div>

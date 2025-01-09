@@ -20,31 +20,38 @@ export class ChatRoomComponent implements OnInit {
   @Output() sendMessage: EventEmitter<string> = new EventEmitter<string>(); // Emite a mensagem para o componente pai
 
   newMessage: string = ''; // Armazena o texto da mensagem
+  userId: string | null = ''; // ID do usuário logado
 
   constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
-    if (this.chatRoom?.id) {
+    // Recupera o ID do usuário logado
+    this.userId = localStorage.getItem('userId');
+    
+    if (this.chatRoom?.id && this.userId) {
       this.loadMessages();
 
       // Ouve novas mensagens recebidas via WebSocket
       this.chatService.onMessage().subscribe((message) => {
         if (message.chatRoomId === this.chatRoom.id) {
-          this.messages.push(message);
+          this.messages.push(message); // Adiciona a nova mensagem à lista de mensagens
         }
       });
     }
   }
 
   loadMessages(): void {
-    if (this.chatRoom?.id) {
+    if (this.chatRoom?.id && this.userId) {
       this.chatService.getMessages(this.chatRoom.id).subscribe(
         (data: any) => {
           console.log('Mensagens carregadas:', data);
-  
+
           if (Array.isArray(data)) {
-            // Se `data` for um array, converte cada item para o formato do modelo
-            this.messages = data.map((msg) => this.mapToMessage(msg));
+            // Filtra as mensagens para mostrar apenas as que correspondem ao usuário logado
+            this.messages = data.filter((msg) => 
+              // Verifica se o ID do usuário logado é o sender_id ou receiver_id
+              (msg.sender_id === this.userId || msg.receiver_id === this.userId)
+            ).map((msg) => this.mapToMessage(msg));
           } else if (data && typeof data === 'object') {
             // Se `data` for um único objeto, envolve em um array e converte
             this.messages = [this.mapToMessage(data)];
@@ -60,7 +67,7 @@ export class ChatRoomComponent implements OnInit {
       );
     }
   }
-  
+
   private mapToMessage(data: any): Message {
     return {
       id: data.id,
@@ -74,12 +81,12 @@ export class ChatRoomComponent implements OnInit {
     };
   }
   
-  
   // Envia a mensagem para o componente pai
   sendMessageToParent(event: any): void {
     const message = event.target.value; // Aqui capturamos a string de `newMessage` do evento
-    if (message.trim() && this.chatRoom?.id) {
-      this.sendMessage.emit(message); // Emite a mensagem para o componente pai
+    if (message.trim() && this.chatRoom?.id && this.userId) {
+      // Emite a mensagem para o componente pai
+      this.sendMessage.emit(message); 
       this.newMessage = ''; // Limpa o campo de entrada após o envio
     } else {
       console.warn('Mensagem vazia ou sala de chat inválida.');

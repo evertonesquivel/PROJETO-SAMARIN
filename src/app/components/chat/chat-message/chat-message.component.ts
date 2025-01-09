@@ -1,12 +1,13 @@
+// chat-message.component.ts
 import { Component, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';  // Importação do CommonModule
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-chat-message',
   templateUrl: './chat-message.component.html',
   styleUrls: ['./chat-message.component.css'],
   standalone: true,
-  imports: [CommonModule]  // Importação do CommonModule aqui
+  imports: [CommonModule]
 })
 export class ChatMessageComponent implements OnInit {
   @Input() message: any;
@@ -17,8 +18,9 @@ export class ChatMessageComponent implements OnInit {
     const userId = localStorage.getItem('userId');
     
     // Verifica se a mensagem foi enviada pelo usuário logado
-    if (this.message && this.message.senderId === userId) {
-      this.isSentByUser = true;
+    if (this.message) {
+      // Verifica quem enviou a mensagem
+      this.isSentByUser = this.message.sender_id === Number(userId);
     }
   }
 }
