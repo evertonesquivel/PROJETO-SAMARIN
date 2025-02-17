@@ -7,14 +7,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { LoginService } from '../../services/auth/login.service'; // Importa o LoginService
 import { DataManagerService } from '../../services/user-data/data-manager.service';
 import { Pipe, PipeTransform } from '@angular/core';
-
+import { MatchAnimationComponent } from '../../match-animation/match-animation.component';
 
 @Component({
   selector: 'app-main-section',
   templateUrl: './main-section.component.html',
   styleUrls: ['./main-section.component.css'],
   standalone: true,
-  imports: [CommonModule, HttpClientModule]
+  imports: [CommonModule, HttpClientModule,MatchAnimationComponent]
 })
 export class MainSectionComponent implements OnInit {
   users: Person[] = [];
@@ -23,6 +23,7 @@ export class MainSectionComponent implements OnInit {
   currentPerson: Person | undefined;
   currentImage: string = '';
   userId: number | undefined; // Armazena o ID do usuário logado
+  showMatchAnimation = false;
 
   constructor(
     private mainSectionService: MainSectionService, 
@@ -86,28 +87,22 @@ export class MainSectionComponent implements OnInit {
   }
 
   like(): void {
-    console.log('Função like() chamada');
-    
     if (!this.currentPerson || !this.userId) {
-      console.log('Like cancelado: currentPerson ou userId não definidos');
-      console.log('currentPerson:', this.currentPerson);
-      console.log('userId:', this.userId);
       return;
     }
 
     const likedUserId = this.currentPerson.id;
-    console.log('Enviando like para o usuário:', likedUserId);
-
     this.mainSectionService.likeOrDislike(this.userId, likedUserId, true).subscribe(
-      response => {
-        console.log('Resposta do servidor após like:', response);
+      (response) => {
         if (response.isMutual) {
-          console.log('Like mútuo detectado!');
-          alert('Like Mútuo! 🎉');
+          this.showMatchAnimation = true; // Exibe a animação
+          setTimeout(() => {
+            this.showMatchAnimation = false; // Oculta a animação após 6 segundos
+          }, 6000);
         }
         this.nextPerson();
       },
-      error => {
+      (error) => {
         console.error('Erro ao dar like:', error);
       }
     );
