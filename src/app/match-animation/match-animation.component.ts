@@ -15,7 +15,6 @@ export class MatchAnimationComponent implements OnInit {
   ngOnInit(): void {
     this.startAnimation();
   }
-
   startAnimation(): void {
     const matchText = document.getElementById('matchText') as HTMLElement;
     const leftProfile = document.querySelector('.profile-left') as HTMLElement;
@@ -23,44 +22,44 @@ export class MatchAnimationComponent implements OnInit {
     const heart = document.querySelector('.heart') as HTMLElement;
     const sparkContainer = document.getElementById('sparkContainer') as HTMLElement;
     const usernames = document.querySelectorAll('.username') as NodeListOf<HTMLElement>;
-
+  
     // 🔥 1. Exibe "Deu Match!" com cor vibrante ANTES de tudo
     matchText.style.display = 'block';
     matchText.classList.add('fade-in');
-
+  
     setTimeout(() => {
       matchText.style.display = 'none';
-    }, 3000);
-
+    }, 3000); // 3 segundos para o texto "Deu Match!"
+  
     // 2. Depois do "Deu Match!", exibe perfis e nomes
     setTimeout(() => {
       leftProfile.style.opacity = '1';
       rightProfile.style.opacity = '1';
       leftProfile.style.transform = 'translateX(0)';
       rightProfile.style.transform = 'translateX(0)';
-
+  
       usernames.forEach((username) => {
         username.style.opacity = '1';
       });
-    }, 3500);
-
+    }, 3500); // 3.5 segundos para os perfis e nomes
+  
     // 3. Exibe coração grande no centro
     setTimeout(() => {
       heart.style.opacity = '1';
       heart.style.transform = 'scale(1.5)';
       heart.classList.add('pulse');
-    }, 4500);
-
+    }, 4500); // 4.5 segundos para o coração
+  
     // 4. Dispara mini corações aleatórios
     setTimeout(() => {
       this.generateMiniHearts();
-    }, 5500);
-
+    }, 5500); // 5.5 segundos para os mini corações
+  
     // 5. Depois dos corações, adiciona as faíscas aleatórias
     setTimeout(() => {
       this.generateSparks();
-    }, 6500);
-
+    }, 6500); // 6.5 segundos para as faíscas
+  
     // 6. Finaliza a animação
     setTimeout(() => {
       heart.style.opacity = '0';
@@ -71,25 +70,31 @@ export class MatchAnimationComponent implements OnInit {
       });
       leftProfile.style.opacity = '0';
       rightProfile.style.opacity = '0';
-    }, 8000);
+    }, 10000); // 10 segundos para o término da animação
   }
-
   generateSparks(): void {
-    const sparkContainer = document.getElementById('sparkContainer') as HTMLElement;
+    const sparkContainer = document.getElementById('sparkContainer');
+  
+    // Verifica se o elemento existe
+    if (!sparkContainer) {
+      console.error('Elemento sparkContainer não encontrado no DOM.');
+      return;
+    }
+  
     sparkContainer.innerHTML = ''; // Limpa faíscas anteriores
     sparkContainer.style.display = 'block';
-
+  
     const colors = ['#FF4081', '#FFEA00', '#7B1FA2', '#2196F3'];
     const numSparks = 50; // Número de faíscas
-
+  
     for (let i = 0; i < numSparks; i++) {
       const spark = document.createElement('div');
       spark.classList.add('spark');
-
+  
       // Posicionamento aleatório dentro da tela
       const x = Math.random() * 100 + 'vw';
       const y = Math.random() * 100 + 'vh';
-
+  
       spark.style.position = 'absolute';
       spark.style.left = x;
       spark.style.top = y;
@@ -99,15 +104,14 @@ export class MatchAnimationComponent implements OnInit {
       spark.style.width = size;
       spark.style.height = size;
       spark.style.borderRadius = '50%';
-
+  
       sparkContainer.appendChild(spark);
-
+  
       setTimeout(() => {
         spark.remove();
       }, 1200);
     }
   }
-
   generateMiniHearts(): void {
     const heartContainer = document.querySelector('.match-container') as HTMLElement;
     const numHearts = 30; // Número de mini corações
