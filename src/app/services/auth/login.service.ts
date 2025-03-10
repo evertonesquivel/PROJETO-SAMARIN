@@ -26,8 +26,6 @@ export class LoginService {
     return this.injector.get(DataManagerService); // Obtém o DataManagerService manualmente
   }
 
-
-
   // Observable públicos
   get isAuthenticated$(): Observable<boolean> {
     return this.isAuthenticatedSubject.asObservable();
@@ -73,6 +71,8 @@ export class LoginService {
             localStorage.setItem('refreshToken', response.refreshToken);
             localStorage.setItem('userId', response.userId.toString());
           }
+          console.log('Login bem-sucedido. Solicitando permissão para acessar a localização...');
+          this.requestGeolocation(response.userId); // Solicita a localização após o login
           return this.loadUserData().pipe(map(() => response));
         }
         return of(response);
@@ -114,10 +114,6 @@ export class LoginService {
     );
   }
 
-  // ... (outros métodos permanecem iguais)
-
-
-
   getUserId(): number | null {
     if (isPlatformBrowser(this.platformId)) {
       const userId = localStorage.getItem('userId');
@@ -140,13 +136,42 @@ export class LoginService {
 
   private requestGeolocation(userId: number): void {
     if (navigator.geolocation) {
+      console.log('Solicitando permissão para acessar a localização...');
+
       navigator.geolocation.getCurrentPosition(
-        position => {
+        (position) => {
+          console.log('Permissão concedida. Obtendo localização...');
           const { latitude, longitude } = position.coords;
-          this.updateLocation(userId, latitude, longitude).subscribe();
+          console.log('Localização obtida:', { latitude, longitude });
+
+          this.updateLocation(userId, latitude, longitude).subscribe(
+            () => console.log('Localização atualizada com sucesso.'),
+            (error) => console.error('Erro ao atualizar localização:', error)
+          );
         },
-        error => console.error('Erro ao obter localização:', error)
+        (error) => {
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              console.error('Permissão para acessar a localização foi negada pelo usuário.');
+              break;
+            case error.POSITION_UNAVAILABLE:
+              console.error('Localização indisponível.');
+              break;
+            case error.TIMEOUT:
+              console.error('Tempo limite excedido ao tentar obter a localização.');
+              break;
+            default:
+              console.error('Erro ao obter localização:', error.message);
+          }
+        },
+        {
+          enableHighAccuracy: true, // Tenta obter a localização com alta precisão
+          timeout: 5000, // Tempo limite de 5 segundos
+          maximumAge: 0 // Não usa cache de localização
+        }
       );
+    } else {
+      console.error('Geolocalização não é suportada pelo navegador.');
     }
   }
 
