@@ -19,6 +19,8 @@
           <p>{{ userProfile?.email }}</p>
           <p>{{ "@" + userProfile?.user_tag }}</p>
         </div>
+        <!-- Botão para ver e editar perfil -->
+        <button (click)="navigateToProfile()">Ver e Editar Perfil</button>
         <button (click)="goToMessages()">Ver Mensagens</button>
         <button (click)="logout()">Logout</button>
       </div>

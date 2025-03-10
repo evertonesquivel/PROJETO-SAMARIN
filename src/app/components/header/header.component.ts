@@ -14,15 +14,17 @@ import { isPlatformBrowser } from '@angular/common';
   providers: [LoginService] // Provide the AuthService here
 })
 export class HeaderComponent implements OnInit {
-  
   isAuthenticated = false; // Exemplo inicial; altere conforme sua lógica
   userProfile: any = {}; // Defina a estrutura do userProfile de acordo com seu modelo
   profileMenuOpen = false;
   navbarOpen = false;
 
-  constructor(private loginService: LoginService,
+  constructor(
+    private loginService: LoginService,
     private dataManagerService: DataManagerService,
-     private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   ngOnInit() {
     this.isAuthenticated = this.loginService.isAuthenticated();
@@ -35,7 +37,7 @@ export class HeaderComponent implements OnInit {
     this.dataManagerService.getUserProfile().subscribe(
       (data) => {
         this.userProfile = data;
-        console.log(this.userProfile)
+        console.log(this.userProfile);
       },
       (error) => {
         console.error('Erro ao buscar o perfil do usuário', error);
@@ -52,7 +54,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logout(): void {
-    this.isAuthenticated = false; 
+    this.isAuthenticated = false;
     this.loginService.logout();
     this.router.navigate(['/login']); // Redirecionar para a página de login
   }
@@ -63,5 +65,14 @@ export class HeaderComponent implements OnInit {
 
   navigateToLogin() {
     this.router.navigate(['/login']);
+  }
+
+  // Método para navegar para o perfil do usuário logado
+  navigateToProfile(): void {
+    if (this.userProfile?.id) {
+      this.router.navigate([`/perfil/${this.userProfile.id}`]);
+    } else {
+      console.error('ID do usuário não disponível');
+    }
   }
 }

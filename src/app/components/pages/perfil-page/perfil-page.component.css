@@ -1,44 +1,47 @@
+/* Estilos existentes */
 .perfil-container {
     display: flex;
     justify-content: space-between;
     padding: 20px;
-}
-
-.perfil-left {
+  }
+  
+  .perfil-left {
     flex: 2;
     text-align: center;
-}
-
-.perfil-image {
+  }
+  
+  .perfil-image {
     width: 200px;
     height: 200px;
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 10px;
-}
-
-.perfil-name {
+  }
+  
+  .perfil-name {
     font-size: 24px;
     margin: 5px 0;
-}
-
-.perfil-nickname {
+  }
+  
+  .perfil-nickname {
     font-size: 18px;
     color: #888;
-}
-
-.perfil-right {
+  }
+  
+  .perfil-right {
     flex: 2;
     padding-left: 20px;
-}
-
-.actions {
+  }
+  
+  .actions {
     margin-top: 20px;
     display: flex;
     gap: 30px;
-}
-
-.like, .dislike, .send-message {
+  }
+  
+  .like,
+  .dislike,
+  .send-message {
     width: 80px;
     height: 80px;
     border: none;
@@ -47,53 +50,50 @@
     font-size: 13px;
     color: #fff;
     background-size: contain;
-}
-
-.like {
-    background-image: url("../../../../assets/curtir.svg");
-    
   }
   
-.dislike {
-    
-    background-image: url("../../../../assets/dimiss.svg");
-}
+  .like {
+    background-image: url("../../../../assets/curtir.svg");
+  }
   
-.send-message {
+  .dislike {
+    background-image: url("../../../../assets/dimiss.svg");
+  }
+  
+  .send-message {
     background-image: url("../../../../assets/rename.svg");
-   
-}
-.additional-section {
+  }
+  
+  .additional-section {
     display: flex;
     justify-content: space-between;
     padding: 20px;
-}
-
-.interests-container {
+  }
+  
+  .interests-container {
     flex: 2;
     margin-left: 40px;
-}
-
-.gallery-container {
+  }
+  
+  .gallery-container {
     flex: 2;
-}
-
-.gallery-grid {
+  }
+  
+  .gallery-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-}
-
-.gallery-grid img {
+  }
+  
+  .gallery-grid img {
     width: 250px;
     height: 250px; /* Manter a proporção quadrada */
     object-fit: cover; /* Ajusta o corte */
     cursor: pointer;
     padding: 0 auto;
-}
-
-/* Estilo para o popup e para o botão de fechar */
-.popup {
+  }
+  
+  .popup {
     position: fixed;
     top: 0;
     left: 0;
@@ -127,3 +127,102 @@
     background: #ddd;
   }
   
+  /* Novos estilos para o modo de edição */
+  /* Estilo para os inputs no modo de edição */
+.perfil-right input {
+    width: 80%; /* Ou um valor fixo como 300px */
+    max-width: 300px; /* Limita a largura máxima */
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  /* Estilo para o textarea no modo de edição */
+  .perfil-right textarea {
+    width: 80%; /* Ou um valor fixo como 300px */
+    max-width: 300px; /* Limita a largura máxima */
+    min-height: 150px; /* Aumenta a altura mínima */
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    resize: vertical; /* Permite redimensionar verticalmente */
+  }
+  
+  /* Estilo para o texto informativo sobre os arquivos permitidos */
+  .file-info {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+  }
+  
+  .perfil-right label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  /* Estilo para os botões de edição */
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  button[disabled] {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  button:not([disabled]):hover {
+    opacity: 0.9;
+  }
+  
+  /* Botão Salvar */
+  button.save {
+    background-color: #4caf50; /* Verde */
+    color: white;
+  }
+  
+  /* Botão Cancelar */
+  button.cancel {
+    background-color: #f44336; /* Vermelho */
+    color: white;
+  }
+  
+  /* Botão Editar Perfil */
+  button.edit {
+    background-color: #2196f3; /* Azul */
+    color: white;
+  }
+  
+  /* Estilo para o upload de imagens */
+  input[type="file"] {
+    margin-top: 10px;
+  }
+  
+  .upload-button {
+    background-color: #ff9800; /* Laranja */
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .upload-button:hover {
+    background-color: #e68900;
+  }
+  
+  /* Estilo para botões de ação desabilitados */
+  .actions button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }

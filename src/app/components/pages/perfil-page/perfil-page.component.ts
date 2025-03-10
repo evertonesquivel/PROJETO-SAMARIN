@@ -6,12 +6,13 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { MainSectionService } from '../../../services/user-data/main-section.service';
 import { DataManagerService } from '../../../services/user-data/data-manager.service';
-import { LoginService } from '../../../services/auth/login.service'; // Importar o LoginService
+import { LoginService } from '../../../services/auth/login.service';
+import { FormsModule } from '@angular/forms'; // Importe o FormsModule
 
 @Component({
   selector: 'app-perfil-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule], // Adicione FormsModule aqui
   templateUrl: './perfil-page.component.html',
   styleUrls: ['./perfil-page.component.css']
 })
@@ -29,7 +30,7 @@ export class PerfilPageComponent implements OnInit, OnDestroy {
     interest: "",
     ageRange: "",
     bio: "",
-    profession :"",
+    profession: "",
     pronouns: "",
     sexual_orientation: "",
     personality: "",
@@ -37,8 +38,7 @@ export class PerfilPageComponent implements OnInit, OnDestroy {
     min_age_interest: 0,
     max_age_interest: 0,
     specific_interests: "",
-    relationship_types : "",
-
+    relationship_types: "",
   };
   locationCarregado: Locations = {
     id: 0,
@@ -51,17 +51,22 @@ export class PerfilPageComponent implements OnInit, OnDestroy {
     created_at: "",
     updated_at: ""
   };
-  
+
   selectedImage: string | null = null;
   private subscription: Subscription = new Subscription();
   userId: number | undefined;
+  isCurrentUser: boolean = false;
+  isEditing: boolean = false;
+  tempPerson: Person | null = null;
+  tempLocation: Locations | null = null;
+  newImages: File[] = [];
 
   constructor(
     private personService: MainSectionService,
     private dataManagerService: DataManagerService,
     private route: ActivatedRoute,
-    private mainSectionService: MainSectionService, // Injetar o MainSectionService
-    private loginService: LoginService // Injetar o LoginService
+    private mainSectionService: MainSectionService,
+    private loginService: LoginService
   ) {}
 
   ngOnInit(): void {
@@ -72,6 +77,7 @@ export class PerfilPageComponent implements OnInit, OnDestroy {
       this.dataManagerService.getUserById(id).subscribe((loadedPerson: Person) => {
         this.personCarregado = loadedPerson;
         this.personCarregado.age = this.calculateAge(this.personCarregado.birth_date);
+        this.isCurrentUser = this.userId === this.personCarregado.id;
         this.loadUserById(id);
       })
     );
@@ -171,5 +177,61 @@ export class PerfilPageComponent implements OnInit, OnDestroy {
       age--;
     }
     return age;
+  }
+
+  startEditing(): void {
+    this.isEditing = true;
+    // Salvar uma cópia temporária dos dados para caso o usuário cancele a edição
+    this.tempPerson = { ...this.personCarregado };
+    this.tempLocation = { ...this.locationCarregado };
+  }
+
+
+  cancelEditing(): void {
+    this.isEditing = false;
+    // Restaurar os dados originais
+    if (this.tempPerson) {
+      this.personCarregado = { ...this.tempPerson };
+    }
+    if (this.tempLocation) {
+      this.locationCarregado = { ...this.tempLocation };
+    }
+    this.tempPerson = null;
+    this.tempLocation = null;
+  }
+
+  onFileChange(event: any): void {
+    this.newImages = Array.from(event.target.files);
+  }
+
+  uploadImages(): void {
+    if (this.newImages.length > 0) {
+      // Aqui você pode adicionar a lógica para enviar as imagens para o backend
+      console.log('Imagens para upload:', this.newImages);
+      // Limpar a lista de novas imagens
+      this.newImages = [];
+    }
+  }
+  saveChanges(): void {
+    const updatedData = {
+      name: this.personCarregado.name,
+      sexual_orientation: this.personCarregado.sexual_orientation,
+      gender_identity: this.personCarregado.gender_identity,
+      interest: this.personCarregado.interest,
+      hobbies: this.personCarregado.hobbies,
+      specific_interests: this.personCarregado.specific_interests,
+      relationship_types: this.personCarregado.relationship_types,
+      // Adicione outros campos que podem ser atualizados
+    };
+
+    this.dataManagerService.updateUserProfile(updatedData).subscribe(
+      (response) => {
+        console.log('Perfil atualizado com sucesso:', response);
+        this.isEditing = false; // Sai do modo de edição
+      },
+      (error) => {
+        console.error('Erro ao atualizar perfil:', error);
+      }
+    );
   }
 }
