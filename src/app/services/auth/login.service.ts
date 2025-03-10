@@ -1,7 +1,7 @@
 import { Injectable, Inject, PLATFORM_ID, Injector } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { map, catchError, switchMap } from 'rxjs/operators';
+import { Observable, of, BehaviorSubject } from 'rxjs';
+import { map, catchError, switchMap, tap } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
 import { DataManagerService } from '../user-data/data-manager.service';
 
@@ -10,55 +10,72 @@ import { DataManagerService } from '../user-data/data-manager.service';
 })
 export class LoginService {
   private apiUrl = 'http://localhost:3000';
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
+  private userProfileSubject = new BehaviorSubject<any>(null);
+  private injector: Injector;
 
   constructor(
     private http: HttpClient,
-    private injector: Injector, // Injeta o Injector
+    injector: Injector, // Injeta o Injector
     @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
-  private get dataManagerService(): DataManagerService {
-    return this.injector.get(DataManagerService); // Usa o Injector para resolver a dependência
-}
-  initializeApp(): Observable<void> {
-    const authToken = this.getToken();
-    const refreshToken = this.getRefreshToken();
-
-    if (!authToken && refreshToken) {
-      // Tenta renovar o token de acesso usando o refresh token
-      return this.refreshAccessToken().pipe(
-        switchMap(newToken => (newToken ? this.loadUserData() : of(undefined))),
-        catchError(() => {
-          this.logout();
-          return of(undefined);
-        })
-      );
-    } else if (authToken) {
-      // Token ainda válido, carrega os dados do usuário
-      return this.loadUserData();
-    }
-    return of(undefined);
+  ) {
+    this.injector = injector;
   }
 
-  // Método para carregar os dados do usuário após a renovação do token
-  loadUserData(): Observable<void> {
-    const token = this.getToken();
-    if (token) {
-      // Aqui você chamaria o serviço para buscar os dados do perfil com o token atualizado
-      return this.dataManagerService.getUserProfile().pipe(map(() => undefined)); // Substitua com uma chamada ao serviço de perfil do usuário, se houver
-    }
-    return of(undefined);
+  private get dataManagerService(): DataManagerService {
+    return this.injector.get(DataManagerService); // Obtém o DataManagerService manualmente
+  }
+
+
+
+  // Observable públicos
+  get isAuthenticated$(): Observable<boolean> {
+    return this.isAuthenticatedSubject.asObservable();
+  }
+
+  get userProfile$(): Observable<any> {
+    return this.userProfileSubject.asObservable();
+  }
+
+  initializeApp(): Observable<void> {
+    return this.refreshAccessToken().pipe(
+      switchMap((newToken) => {
+        if (newToken) {
+          return this.loadUserData();
+        } else {
+          this.isAuthenticatedSubject.next(false);
+          return of(undefined);
+        }
+      }),
+      catchError(() => {
+        this.logout();
+        return of(undefined);
+      })
+    );
+  }
+
+  private loadUserData(): Observable<void> {
+    return this.dataManagerService.getUserProfile().pipe(
+      tap((profile) => {
+        this.userProfileSubject.next(profile);
+        this.isAuthenticatedSubject.next(true);
+      }),
+      map(() => undefined)
+    );
   }
 
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
-      map((response: any) => {
-        if (response && response.accessToken && response.refreshToken && response.userId && isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('authToken', response.accessToken);
-          localStorage.setItem('refreshToken', response.refreshToken);
-          localStorage.setItem('userId', response.userId.toString());
-          this.requestGeolocation(response.userId);
+      switchMap((response: any) => {
+        if (response?.accessToken && response?.refreshToken && response?.userId) {
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem('authToken', response.accessToken);
+            localStorage.setItem('refreshToken', response.refreshToken);
+            localStorage.setItem('userId', response.userId.toString());
+          }
+          return this.loadUserData().pipe(map(() => response));
         }
-        return response;
+        return of(response);
       })
     );
   }
@@ -73,6 +90,8 @@ export class LoginService {
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('userId');
     }
+    this.isAuthenticatedSubject.next(false);
+    this.userProfileSubject.next(null);
   }
 
   refreshAccessToken(): Observable<string | null> {
@@ -80,12 +99,13 @@ export class LoginService {
     if (!refreshToken) return of(null);
 
     return this.http.post(`${this.apiUrl}/refresh-token`, { refreshToken }).pipe(
-      map((response: any) => {
+      switchMap((response: any) => {
         const newAccessToken = response.accessToken;
         if (newAccessToken && isPlatformBrowser(this.platformId)) {
           localStorage.setItem('authToken', newAccessToken);
+          return this.loadUserData().pipe(map(() => newAccessToken));
         }
-        return newAccessToken;
+        return of(null);
       }),
       catchError(() => {
         this.logout();
@@ -93,6 +113,10 @@ export class LoginService {
       })
     );
   }
+
+  // ... (outros métodos permanecem iguais)
+
+
 
   getUserId(): number | null {
     if (isPlatformBrowser(this.platformId)) {
@@ -131,11 +155,10 @@ export class LoginService {
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
     return this.http.post(`${this.apiUrl}/update-location`, { userId, latitude, longitude }, { headers });
   }
+
   isTokenExpired(token: string): boolean {
     if (!token) return true;
-
     const expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
     return (Math.floor((new Date).getTime() / 1000)) >= expiry;
-}
-
+  }
 }

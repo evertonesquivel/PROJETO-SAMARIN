@@ -25,9 +25,7 @@ export class AppComponent {
   
   }
   ngOnInit(): void {
-    this.loginService.initializeApp().subscribe(() => {
-      this.checkLoginStatus();
-    });
+    this.loginService.initializeApp().subscribe();
   }
   checkLoginStatus(): void {
     if (this.loginService.isAuthenticated()) {

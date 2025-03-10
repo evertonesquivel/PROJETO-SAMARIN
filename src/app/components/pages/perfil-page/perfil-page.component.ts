@@ -161,9 +161,9 @@ export class PerfilPageComponent implements OnInit, OnDestroy {
   }
 
   openPopup(image: string): void {
+    console.log('Imagem clicada:', image);
     this.selectedImage = image;
   }
-
   closePopup(): void {
     this.selectedImage = null;
   }

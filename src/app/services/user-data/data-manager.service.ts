@@ -1,15 +1,12 @@
-// src/app/services/data-manager.service.ts
-
-import { LoginService } from '../auth/login.service';
-import { Injectable } from '@angular/core';
+import { Injectable, Optional } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { Person } from '../../models/person.model';
-import { map } from 'rxjs/operators';
+import { LoginService } from '../auth/login.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DataManagerService {
   private apiUrl = 'http://localhost:3000'; // URL da API
@@ -17,11 +14,15 @@ export class DataManagerService {
 
   constructor(
     private http: HttpClient,
-    private loginService: LoginService
-  ) { }
+    @Optional() private loginService?: LoginService // Torna o LoginService opcional
+  ) {}
 
   // Método para atualizar o perfil do usuário
   updateUserProfile(updatedData: any): Observable<any> {
+    if (!this.loginService) {
+      return throwError(() => new Error('LoginService não está disponível.'));
+    }
+
     const token = this.loginService.getToken(); // Obtém o token do usuário logado
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` }); // Configura os headers com o token
 
@@ -35,6 +36,10 @@ export class DataManagerService {
 
   // Métodos existentes...
   getUserProfile(): Observable<any> {
+    if (!this.loginService) {
+      return throwError(() => new Error('LoginService não está disponível.'));
+    }
+
     const token = this.loginService.getToken();
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
     console.log("Token enviado na requisição:", token);
@@ -62,6 +67,10 @@ export class DataManagerService {
   }
 
   getLocationUser(userId: number): Observable<any> {
+    if (!this.loginService) {
+      return throwError(() => new Error('LoginService não está disponível.'));
+    }
+
     const token = this.loginService.getToken(); // Obter o token do usuário logado
     const headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` });
 

@@ -11,11 +11,11 @@ import { isPlatformBrowser } from '@angular/common';
   styleUrls: ['./header.component.css'],
   standalone: true,
   imports: [CommonModule],
-  providers: [LoginService] // Provide the AuthService here
+  providers: [LoginService]
 })
 export class HeaderComponent implements OnInit {
-  isAuthenticated = false; // Exemplo inicial; altere conforme sua lógica
-  userProfile: any = {}; // Defina a estrutura do userProfile de acordo com seu modelo
+  isAuthenticated = false; // Estado de autenticação
+  userProfile: any = {}; // Dados do perfil
   profileMenuOpen = false;
   navbarOpen = false;
 
@@ -27,6 +27,20 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Inscreva-se no estado de autenticação
+    this.loginService.isAuthenticated$.subscribe((isAuthenticated) => {
+      this.isAuthenticated = isAuthenticated;
+      if (isAuthenticated) {
+        this.getUserProfile();
+      }
+    });
+
+    // Inscreva-se nos dados do perfil
+    this.loginService.userProfile$.subscribe((profile) => {
+      this.userProfile = profile;
+    });
+
+    // Verifique o estado inicial de autenticação
     this.isAuthenticated = this.loginService.isAuthenticated();
     if (this.isAuthenticated) {
       this.getUserProfile();
@@ -54,9 +68,8 @@ export class HeaderComponent implements OnInit {
   }
 
   logout(): void {
-    this.isAuthenticated = false;
     this.loginService.logout();
-    this.router.navigate(['/login']); // Redirecionar para a página de login
+    this.router.navigate(['/login']);
   }
 
   toggleNavbar() {
@@ -67,7 +80,6 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  // Método para navegar para o perfil do usuário logado
   navigateToProfile(): void {
     if (this.userProfile?.id) {
       this.router.navigate([`/perfil/${this.userProfile.id}`]);

@@ -65,5 +65,10 @@
       <button class="upload-button" (click)="uploadImages()">Upload</button>
       <p class="file-info">Apenas arquivos .png, .jpg, .jpeg ou .gif são permitidos.</p>
     </div>
+    <!-- Popup para exibir imagem -->
+<div class="popup" *ngIf="selectedImage">
+  <img [src]="selectedImage" alt="Imagem em destaque">
+  <button class="close-popup" (click)="closePopup()">Fechar</button>
+</div>
   </div>
 </div>
