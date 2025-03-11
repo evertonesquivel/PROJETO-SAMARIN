@@ -23,6 +23,7 @@ export class AppComponent {
   constructor(private router: Router, private loginService: LoginService) {
     this.checkLoginStatus();
   
+    
   }
   ngOnInit(): void {
     this.loginService.initializeApp().subscribe();

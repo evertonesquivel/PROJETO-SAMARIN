@@ -14,27 +14,27 @@ import { MatchAnimationComponent } from '../../match-animation/match-animation.c
   templateUrl: './main-section.component.html',
   styleUrls: ['./main-section.component.css'],
   standalone: true,
-  imports: [CommonModule, HttpClientModule,MatchAnimationComponent]
+  imports: [CommonModule, HttpClientModule, MatchAnimationComponent]
 })
 export class MainSectionComponent implements OnInit {
   users: Person[] = [];
   currentIndex = 0;
   currentImageIndex = 0;
   currentPerson: Person | undefined;
-  currentImage: string = '';
+  currentImage: string | null = null; // Inicializa como null
   userId: number | undefined; // Armazena o ID do usuário logado
   showMatchAnimation = false;
 
   constructor(
-    private mainSectionService: MainSectionService, 
+    private mainSectionService: MainSectionService,
     private loginService: LoginService, // Injetar o LoginService
-    private dataManagerService : DataManagerService,
+    private dataManagerService: DataManagerService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     console.log('ngOnInit chamado');
-    
+
     const userId = this.loginService.getUserId();
     if (userId) {
       console.log('ID do usuário obtido:', userId);
@@ -45,15 +45,19 @@ export class MainSectionComponent implements OnInit {
       // Redirecionar para a página de login ou mostrar uma mensagem de erro
     }
   }
+
   loadUsers(): void {
     this.dataManagerService.getUsers().subscribe(
-      (data) => {
+      (data: Person[]) => {
         console.log('Dados de usuários obtidos:', data);
-        this.users = data;
+        this.users = data.map(user => ({
+          ...user,
+          images: user.images || [] // Garante que `images` seja um array, mesmo que esteja undefined
+        }));
         if (this.users.length > 0) {
           this.currentPerson = this.users[this.currentIndex];
-          this.currentImage = this.currentPerson?.images[this.currentImageIndex] || '';
-          console.log('Pessoa atual definida:', this.currentPerson);
+          console.log('Imagens do usuário atual:', this.currentPerson.images);
+          this.updateCurrentImage(); // Atualiza a imagem atual
         } else {
           console.log('Nenhum usuário obtido');
         }
@@ -63,26 +67,38 @@ export class MainSectionComponent implements OnInit {
       }
     );
   }
+  updateCurrentImage(): void {
+    if (this.currentPerson) {
+      if (!this.currentPerson.images || this.currentPerson.images.length === 0) {
+        this.currentPerson.images = ['assets/placeholder.jpg']; // Adiciona uma imagem de placeholder
+      }
+      this.currentImage = this.currentPerson.images[this.currentImageIndex];
+    } else {
+      this.currentImage = 'assets/placeholder.jpg';
+    }
+    console.log('Imagem atualizada:', this.currentImage);
+  }
 
   nextImage(): void {
-    if (this.currentPerson && this.currentPerson.images.length > 0) {
+    if (this.currentPerson && this.currentPerson.images && this.currentPerson.images.length > 0) {
       this.currentImageIndex = (this.currentImageIndex + 1) % this.currentPerson.images.length;
       this.currentImage = this.currentPerson.images[this.currentImageIndex];
     }
   }
 
   prevImage(): void {
-    if (this.currentPerson && this.currentPerson.images.length > 0) {
+    if (this.currentPerson && this.currentPerson.images && this.currentPerson.images.length > 0) {
       this.currentImageIndex = (this.currentImageIndex - 1 + this.currentPerson.images.length) % this.currentPerson.images.length;
       this.currentImage = this.currentPerson.images[this.currentImageIndex];
     }
   }
+
   nextPerson(): void {
     if (this.users.length > 0) {
       this.currentIndex = (this.currentIndex + 1) % this.users.length;
       this.currentPerson = this.users[this.currentIndex];
       this.currentImageIndex = 0;
-      this.currentImage = this.currentPerson?.images[this.currentImageIndex] || '';
+      this.updateCurrentImage(); // Atualiza a imagem atual
     }
   }
 
@@ -110,7 +126,7 @@ export class MainSectionComponent implements OnInit {
 
   dislike(): void {
     console.log('Função dislike() chamada');
-    
+
     if (!this.currentPerson || !this.userId) {
       console.log('Dislike cancelado: currentPerson ou userId não definidos');
       console.log('currentPerson:', this.currentPerson);
@@ -131,21 +147,21 @@ export class MainSectionComponent implements OnInit {
       }
     );
   }
-  
+
   calculateAge(birthDate?: string): number | null {
     if (!birthDate) {
       return null;
     }
-  
+
     const today = new Date();
     const birth = new Date(birthDate);
     let age = today.getFullYear() - birth.getFullYear();
     const monthDiff = today.getMonth() - birth.getMonth();
-  
+
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
       age--;
     }
-  
+
     return age;
   }
 
@@ -156,7 +172,9 @@ export class MainSectionComponent implements OnInit {
   getUserById(id: number): Person | undefined {
     return this.users.find(person => person.id === id);
   }
-}@Pipe({
+}
+
+@Pipe({
   name: 'stringToArray'
 })
 export class StringToArrayPipe implements PipeTransform {
@@ -164,4 +182,3 @@ export class StringToArrayPipe implements PipeTransform {
     return value ? value.split(separator).map(item => item.trim()) : [];
   }
 }
-

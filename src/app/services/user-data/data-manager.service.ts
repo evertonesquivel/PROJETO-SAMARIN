@@ -54,7 +54,19 @@ export class DataManagerService {
   }
 
   getUsers(): Observable<Person[]> {
-    return this.http.get<Person[]>(`${this.apiUrl}/users`);
+    if (!this.loginService) {
+      return throwError(() => new Error('LoginService não está disponível.'));
+    }
+  
+    const token = this.loginService.getToken(); // Obtém o token do usuário logado
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` }); // Configura os headers com o token
+  
+    return this.http.get<Person[]>(`${this.apiUrl}/recommendations`, { headers }).pipe(
+      catchError(error => {
+        console.error('Erro ao buscar usuários:', error);
+        return throwError(error);
+      })
+    );
   }
 
   getUserById(id: number): Observable<Person> {
