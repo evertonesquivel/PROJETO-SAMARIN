@@ -1,5 +1,11 @@
 <section class="container">
-  <div class="main__container">
+  <!-- Conteúdo principal (carrossel de recomendações) -->
+  <div *ngIf="users.length > 0" class="main__container">
+    <!-- Botão para abrir o modal de atualização de distância -->
+    <button class="update-distance-button" (click)="openLocationModal()">
+      Atualizar Distância
+    </button>
+
     <div class="content__left">
       <div class="carousel">
         <img [src]="currentImage" alt="Profile picture">
@@ -27,8 +33,43 @@
         <button class="like" (click)="like()"></button>
         <button class="dislike" (click)="dislike()"></button>
         <button (click)="navigateToProfile(users[currentIndex].id)" class="view-profile"></button>
-        <button class="send-message"></button>
+        <button class="send-message" (click)="sendMessage()"></button>
+
+        <!-- Alerta animado -->
+        <div *ngIf="showAlert" class="alert animated-alert">
+          Função disponível em breve!
+        </div>
       </div>
+    </div>
+  </div>
+  <!-- Mensagem e botão para atualizar localização -->
+  <div *ngIf="users.length === 0" class="no-recommendations">
+    <p>Nada por aqui. Deseja atualizar a localização?</p>
+    <button (click)="openLocationModal()">Atualizar Localização</button>
+  </div>
+
+  <!-- Modal de atualização de distância de filtragem -->
+  <div *ngIf="showLocationModal" class="modal-overlay">
+    <div class="modal-content">
+      <h2>Atualizar Distância de Filtragem</h2>
+
+      <!-- Slider para ajustar a distância -->
+      <label for="filterDistance">Distância de Filtragem: {{ filterDistance }} km</label>
+      <input
+        id="filterDistance"
+        type="range"
+        min="10"
+        max="100"
+        step="10"
+        [(ngModel)]="filterDistance"
+        name="filterDistance"
+      />
+      <button (click)="getCurrentLocation()">Buscar Minha Localização</button>
+      <!-- Botão para salvar a distância -->
+      <button (click)="updateFilterDistance()">Salvar</button>
+
+      <!-- Botão para fechar o modal -->
+      <button (click)="closeLocationModal()">Fechar</button>
     </div>
   </div>
   <app-match-animation *ngIf="showMatchAnimation" [user1]="currentPerson?.name" [user2]="currentPerson?.name"></app-match-animation>

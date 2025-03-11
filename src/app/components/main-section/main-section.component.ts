@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,Pipe, PipeTransform  } from '@angular/core';
 import { MainSectionService } from '../../services/user-data/main-section.service';
 import { Person } from '../../models/person.model';
 import { Router } from '@angular/router';
@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginService } from '../../services/auth/login.service'; // Importa o LoginService
 import { DataManagerService } from '../../services/user-data/data-manager.service';
-import { Pipe, PipeTransform } from '@angular/core';
+import { FormsModule } from '@angular/forms'; // Importe o FormsModule
 import { MatchAnimationComponent } from '../../match-animation/match-animation.component';
 
 @Component({
@@ -14,7 +14,7 @@ import { MatchAnimationComponent } from '../../match-animation/match-animation.c
   templateUrl: './main-section.component.html',
   styleUrls: ['./main-section.component.css'],
   standalone: true,
-  imports: [CommonModule, HttpClientModule, MatchAnimationComponent]
+  imports: [CommonModule, HttpClientModule, MatchAnimationComponent, FormsModule]
 })
 export class MainSectionComponent implements OnInit {
   users: Person[] = [];
@@ -24,6 +24,12 @@ export class MainSectionComponent implements OnInit {
   currentImage: string | null = null; // Inicializa como null
   userId: number | undefined; // Armazena o ID do usuário logado
   showMatchAnimation = false;
+  showLocationModal = false; // Controla a exibição do modal
+  newLatitude: number | null = null; // Nova latitude
+  newLongitude: number | null = null; // Nova longitude
+  filterDistance: number = 10; // Distância de filtragem padrão
+  showAlert: boolean = false; // Controla a visibilidade do alerta
+
 
   constructor(
     private mainSectionService: MainSectionService,
@@ -172,7 +178,93 @@ export class MainSectionComponent implements OnInit {
   getUserById(id: number): Person | undefined {
     return this.users.find(person => person.id === id);
   }
-}
+    // Abre o modal de atualização de localização
+    openLocationModal(): void {
+      this.showLocationModal = true;
+    }
+  
+    // Fecha o modal
+    closeLocationModal(): void {
+      this.showLocationModal = false;
+    }
+  
+    // Busca a localização atual do usuário (geolocalização do navegador)
+    getCurrentLocation(): void {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            this.newLatitude = position.coords.latitude;
+            this.newLongitude = position.coords.longitude;
+            console.log('Localização obtida:', this.newLatitude, this.newLongitude);
+          },
+          (error) => {
+            console.error('Erro ao obter localização:', error);
+            alert('Não foi possível obter sua localização. Atualize manualmente.');
+          }
+        );
+      } else {
+        alert('Geolocalização não suportada pelo navegador.');
+      }
+    }
+  
+    // Atualiza a localização no backend
+    updateLocation(): void {
+      if (this.newLatitude && this.newLongitude) {
+        const userId = this.loginService.getUserId();
+        if (userId) {
+          this.dataManagerService.updateUserLocation(userId, this.newLatitude, this.newLongitude).subscribe(
+            (response) => {
+              console.log('Localização atualizada:', response);
+              this.closeLocationModal();
+              this.loadUsers(); // Recarrega as recomendações
+            },
+            (error) => {
+              console.error('Erro ao atualizar localização:', error);
+            }
+          );
+        } else {
+          console.error('Usuário não está logado.');
+        }
+      } else {
+        alert('Preencha a latitude e a longitude.');
+      }
+    }
+      // Carrega os usuários recomendados
+
+      // Atualiza a distância de filtragem no backend
+  updateFilterDistance(): void {
+    const userId = this.loginService.getUserId();
+    if (userId) {
+      this.dataManagerService.updateFilterDistance(userId, this.filterDistance).subscribe(
+        (response) => {
+          console.log('Distância de filtragem atualizada:', response);
+          this.closeLocationModal();
+          this.loadUsers(); // Recarrega as recomendações
+        },
+        (error) => {
+          console.error('Erro ao atualizar distância de filtragem:', error);
+        }
+      );
+    } else {
+      console.error('Usuário não está logado.');
+    }
+  }
+  // Função para exibir o alerta animado
+  sendMessage() {
+    this.showAlert = true; // Mostra o alerta
+
+    // Oculta o alerta após 3 segundos
+    setTimeout(() => {
+      this.showAlert = false;
+    }, 3000);
+  }
+  
+  }
+  
+  
+  
+
+
 
 @Pipe({
   name: 'stringToArray'

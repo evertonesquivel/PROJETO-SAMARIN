@@ -1,9 +1,9 @@
 import { Injectable, Inject, PLATFORM_ID, Injector } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable, of, BehaviorSubject, throwError } from 'rxjs';
 import { map, catchError, switchMap, tap } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
-import { DataManagerService } from '../user-data/data-manager.service';
+
 
 @Injectable({
   providedIn: 'root',
@@ -22,9 +22,6 @@ export class LoginService {
     this.injector = injector;
   }
 
-  private get dataManagerService(): DataManagerService {
-    return this.injector.get(DataManagerService); // Obtém o DataManagerService manualmente
-  }
 
   // Observable públicos
   get isAuthenticated$(): Observable<boolean> {
@@ -52,13 +49,31 @@ export class LoginService {
     );
   }
 
+  // Método para carregar os dados do perfil do usuário
   private loadUserData(): Observable<void> {
-    return this.dataManagerService.getUserProfile().pipe(
+    return this.getUserProfile().pipe(
       tap((profile) => {
         this.userProfileSubject.next(profile);
         this.isAuthenticatedSubject.next(true);
       }),
       map(() => undefined)
+    );
+  }
+
+  // Método para buscar o perfil do usuário
+  getUserProfile(): Observable<any> {
+    const token = this.getToken();
+    if (!token) {
+      return throwError(() => new Error('Token não disponível.'));
+    }
+
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.get(`${this.apiUrl}/profile`, { headers }).pipe(
+      map((response: any) => response[0]),
+      catchError(error => {
+        console.error('Erro ao buscar perfil do usuário:', error);
+        return throwError(error);
+      })
     );
   }
 

@@ -56,9 +56,9 @@ export class MatchAnimationComponent implements OnInit {
     }, 5500); // 5.5 segundos para os mini corações
   
     // 5. Depois dos corações, adiciona as faíscas aleatórias
-    setTimeout(() => {
-      this.generateSparks();
-    }, 6500); // 6.5 segundos para as faíscas
+    // setTimeout(() => {
+    //   this.generateSparks();
+    // }, 6500); // 6.5 segundos para as faíscas
   
     // 6. Finaliza a animação
     setTimeout(() => {
@@ -72,46 +72,46 @@ export class MatchAnimationComponent implements OnInit {
       rightProfile.style.opacity = '0';
     }, 10000); // 10 segundos para o término da animação
   }
-  generateSparks(): void {
-    const sparkContainer = document.getElementById('sparkContainer');
+  // generateSparks(): void {
+  //   const sparkContainer = document.getElementById('sparkContainer');
   
-    // Verifica se o elemento existe
-    if (!sparkContainer) {
-      console.error('Elemento sparkContainer não encontrado no DOM.');
-      return;
-    }
+  //   // Verifica se o elemento existe
+  //   if (!sparkContainer) {
+  //     console.error('Elemento sparkContainer não encontrado no DOM.');
+  //     return;
+  //   }
   
-    sparkContainer.innerHTML = ''; // Limpa faíscas anteriores
-    sparkContainer.style.display = 'block';
+  //   sparkContainer.innerHTML = ''; // Limpa faíscas anteriores
+  //   sparkContainer.style.display = 'block';
   
-    const colors = ['#FF4081', '#FFEA00', '#7B1FA2', '#2196F3'];
-    const numSparks = 50; // Número de faíscas
+  //   const colors = ['#FF4081', '#FFEA00', '#7B1FA2', '#2196F3'];
+  //   const numSparks = 50; // Número de faíscas
   
-    for (let i = 0; i < numSparks; i++) {
-      const spark = document.createElement('div');
-      spark.classList.add('spark');
+  //   for (let i = 0; i < numSparks; i++) {
+  //     const spark = document.createElement('div');
+  //     spark.classList.add('spark');
   
-      // Posicionamento aleatório dentro da tela
-      const x = Math.random() * 100 + 'vw';
-      const y = Math.random() * 100 + 'vh';
+  //     // Posicionamento aleatório dentro da tela
+  //     const x = Math.random() * 100 + 'vw';
+  //     const y = Math.random() * 100 + 'vh';
   
-      spark.style.position = 'absolute';
-      spark.style.left = x;
-      spark.style.top = y;
+  //     spark.style.position = 'absolute';
+  //     spark.style.left = x;
+  //     spark.style.top = y;
       
-      spark.style.background = colors[Math.floor(Math.random() * colors.length)];
-      const size = Math.random() * 12 + 'px';
-      spark.style.width = size;
-      spark.style.height = size;
-      spark.style.borderRadius = '50%';
+  //     spark.style.background = colors[Math.floor(Math.random() * colors.length)];
+  //     const size = Math.random() * 12 + 'px';
+  //     spark.style.width = size;
+  //     spark.style.height = size;
+  //     spark.style.borderRadius = '50%';
   
-      sparkContainer.appendChild(spark);
+  //     sparkContainer.appendChild(spark);
   
-      setTimeout(() => {
-        spark.remove();
-      }, 1200);
-    }
-  }
+  //     setTimeout(() => {
+  //       spark.remove();
+  //     }, 1200);
+  //   }
+  // }
   generateMiniHearts(): void {
     const heartContainer = document.querySelector('.match-container') as HTMLElement;
     const numHearts = 30; // Número de mini corações

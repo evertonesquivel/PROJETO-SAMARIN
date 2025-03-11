@@ -14,7 +14,7 @@ export class DataManagerService {
 
   constructor(
     private http: HttpClient,
-    @Optional() private loginService?: LoginService // Torna o LoginService opcional
+    private loginService: LoginService // Torna o LoginService opcional
   ) {}
 
   // Método para atualizar o perfil do usuário
@@ -89,6 +89,36 @@ export class DataManagerService {
     return this.http.post<any>(this.apiLocation, { id: userId }, { headers }).pipe(
       catchError(error => {
         console.error('Erro ao buscar localização do usuário:', error);
+        return throwError(error);
+      })
+    );
+  }
+  updateUserLocation(userId: number, latitude: number, longitude: number): Observable<any> {
+    const token = this.loginService.getToken();
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    return this.http.post(
+      `${this.apiUrl}/update-location`,
+      { latitude, longitude },
+      { headers }
+    ).pipe(
+      catchError(error => {
+        console.error('Erro ao atualizar localização:', error);
+        return throwError(error);
+      })
+    );
+  }
+  updateFilterDistance(userId: number, filterDistance: number): Observable<any> {
+    const token = this.loginService.getToken();
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+  
+    return this.http.post(
+      `${this.apiUrl}/update-filter-distance`,
+      { filterDistance },
+      { headers }
+    ).pipe(
+      catchError(error => {
+        console.error('Erro ao atualizar distância de filtragem:', error);
         return throwError(error);
       })
     );
