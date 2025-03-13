@@ -51,10 +51,32 @@ export class HeaderComponent implements OnInit {
     this.dataManagerService.getUserProfile().subscribe(
       (data) => {
         this.userProfile = data;
-        console.log(this.userProfile);
+        console.log('Perfil do usuário:', this.userProfile);
+
+        // Busca a primeira imagem do usuário
+        if (this.userProfile?.id) {
+          this.fetchUserProfileImage(this.userProfile.id);
+        }
       },
       (error) => {
         console.error('Erro ao buscar o perfil do usuário', error);
+      }
+    );
+  }
+
+  fetchUserProfileImage(userId: number): void {
+    this.dataManagerService.fetchAndSaveUserImages(userId).subscribe(
+      (images) => {
+        if (images.length > 0) {
+          // Atualiza apenas a primeira imagem no perfil do usuário
+          this.userProfile.images = [images[0].imageUrl];
+        } else {
+          // Define uma imagem de placeholder se não houver imagens
+          this.userProfile.images = ['assets/default-profile.png'];
+        }
+      },
+      (error) => {
+        console.error('Erro ao buscar a imagem do perfil:', error);
       }
     );
   }

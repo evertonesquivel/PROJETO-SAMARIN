@@ -1,6 +1,15 @@
 <div class="perfil-container">
   <div class="perfil-left">
     <img class="perfil-image" [src]="personCarregado.images[0]" alt="{{personCarregado.name}}">
+    <!-- Input para trocar a imagem de perfil -->
+    <div *ngIf="isEditing">
+      <input
+        type="file"
+        (change)="onProfileImageChange($event)"
+        accept=".png, .jpg, .jpeg, .gif"
+      />
+      <p class="file-info">Apenas arquivos .png, .jpg, .jpeg ou .gif são permitidos.</p>
+    </div>
     <p class="perfil-name">{{personCarregado.name}}</p>
     <p class="perfil-nickname">{{ "@" + personCarregado.user_tag }}</p>
     <button *ngIf="isCurrentUser && !isEditing" class="edit" (click)="startEditing()">Editar Perfil</button>
@@ -53,22 +62,22 @@
   <div class="gallery-container">
     <h2>Galeria</h2>
     <div class="gallery-grid">
-      <img *ngFor="let img of getGalleryImages()" [src]="img" (click)="openPopup(img)" alt="Galeria">
+      <img *ngFor="let img of personCarregado.images; let i = index" [src]="img" (click)="openPopup(img)" alt="Galeria">
     </div>
     <div *ngIf="isEditing">
-      <input
-        type="file"
-        (change)="onFileChange($event)"
-        multiple
-        accept=".png, .jpg, .jpeg, .gif"
-      />
-      <button class="upload-button" (click)="uploadImages()">Upload</button>
+      <!-- Upload da imagem de perfil -->
+<input type="file" (change)="onProfileImageChange($event)" accept="image/*" />
+
+<!-- Upload de múltiplas imagens para a galeria -->
+<input type="file" (change)="onGalleryImagesChange($event)" multiple accept="image/*" />
+<button (click)="uploadGalleryImages(personCarregado.id, newImages)">Upload</button>
       <p class="file-info">Apenas arquivos .png, .jpg, .jpeg ou .gif são permitidos.</p>
+      <p *ngIf="personCarregado.images.length >= 5" class="file-info">Limite máximo de 5 imagens atingido.</p>
     </div>
     <!-- Popup para exibir imagem -->
-<div class="popup" *ngIf="selectedImage">
-  <img [src]="selectedImage" alt="Imagem em destaque">
-  <button class="close-popup" (click)="closePopup()">Fechar</button>
-</div>
+    <div class="popup" *ngIf="selectedImage">
+      <img [src]="selectedImage" alt="Imagem em destaque">
+      <button class="close-popup" (click)="closePopup()">Fechar</button>
+    </div>
   </div>
-</div>
+  </div>

@@ -8,17 +8,21 @@
 
     <div class="content__left">
       <div class="carousel">
+        <!-- Exibe a imagem atual do usuário -->
         <img [src]="currentImage" alt="Profile picture">
+        <!-- Botões para navegar entre as imagens -->
         <button class="prev" (click)="prevImage()"></button>
         <button class="next" (click)="nextImage()"></button>
       </div>
     </div>
+
     <div class="content__right" *ngIf="currentPerson">
       <div class="header">
-        <h1>{{ currentPerson.name }} {{ calculateAge(currentPerson.birth_date) }} <p>{{ currentPerson.pronouns }}</p></h1>
+        <h1>{{ currentPerson.name }}, {{ calculateAge(currentPerson.birth_date) }} <p>{{ currentPerson.pronouns }}</p></h1>
       </div>
       <div class="profile-info">
         <div class="badges">
+          <!-- Exibe badges com informações do usuário -->
           <span class="badge">{{ currentPerson.sexual_orientation }}</span>
           <span class="badge">{{ currentPerson.gender_identity }}</span>
           <span class="badge">{{ currentPerson.relationship_types }}</span>
@@ -26,10 +30,11 @@
           <span class="badge" *ngFor="let interest of currentPerson.interest">
             {{ interest }}
           </span>
-          <span class="badge"> Interesse em pessoas de {{ currentPerson.min_age_interest }} a {{ currentPerson.max_age_interest }} anos </span>
+          <span class="badge">Interesse em pessoas de {{ currentPerson.min_age_interest }} a {{ currentPerson.max_age_interest }} anos</span>
         </div>
       </div>
       <div class="actions">
+        <!-- Botões de like, dislike, ver perfil e enviar mensagem -->
         <button class="like" (click)="like()"></button>
         <button class="dislike" (click)="dislike()"></button>
         <button (click)="navigateToProfile(users[currentIndex].id)" class="view-profile"></button>
@@ -42,6 +47,7 @@
       </div>
     </div>
   </div>
+
   <!-- Mensagem e botão para atualizar localização -->
   <div *ngIf="users.length === 0" class="no-recommendations">
     <p>Nada por aqui. Deseja atualizar a localização?</p>
@@ -72,5 +78,7 @@
       <button (click)="closeLocationModal()">Fechar</button>
     </div>
   </div>
+
+  <!-- Animação de match -->
   <app-match-animation *ngIf="showMatchAnimation" [user1]="currentPerson?.name" [user2]="currentPerson?.name"></app-match-animation>
 </section>

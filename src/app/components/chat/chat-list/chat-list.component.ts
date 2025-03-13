@@ -1,12 +1,14 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ChatService } from '../../../services/chat/chat.service';
-import { CommonModule } from '@angular/common'; 
+import { DataManagerService } from '../../../services/user-data/data-manager.service'; // Importe o DataManagerService
+import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-chat-list',
   templateUrl: './chat-list.component.html',
   styleUrls: ['./chat-list.component.css'],
-  standalone : true,
-  imports : [CommonModule]
+  standalone: true,
+  imports: [CommonModule]
 })
 export class ChatListComponent implements OnInit {
   @Input() conversations: any[] = []; // Lista de conversas
@@ -15,33 +17,53 @@ export class ChatListComponent implements OnInit {
   messages: any[] = []; // Mensagens carregadas
   selectedChatRoom: any = null; // ChatRoom selecionado
   userId: number = 0; // ID do usuário logado
-  constructor(private chatService: ChatService) {}
+
+  constructor(
+    private chatService: ChatService,
+    private dataManagerService: DataManagerService // Injete o DataManagerService
+  ) {}
 
   ngOnInit(): void {
     if (!this.conversations.length) {
       this.loadContacts();
     }
-     // Escuta novas mensagens via WebSocket
-     this.chatService.onMessage().subscribe((newMessage) => {
+
+    // Escuta novas mensagens via WebSocket
+    this.chatService.onMessage().subscribe((newMessage) => {
       if (this.selectedChatRoom && newMessage.chatRoomId === this.selectedChatRoom.id) {
         this.messages.push(newMessage);
       }
     });
-  
   }
-  
-
 
   // Carrega a lista de contatos/conversas do usuário
   loadContacts(): void {
     this.chatService.getContacts().subscribe({
       next: (contacts) => {
         console.log('Contatos recebidos:', contacts);
-        this.contacts = contacts; // ou similar
+        this.contacts = contacts;
+
+        // Para cada contato, busca o perfil e a primeira imagem
+        this.contacts.forEach(contact => {
+          this.loadContactProfile(contact.id);
+        });
       },
       error: (err) => console.error('Erro ao buscar contatos:', err),
     });
-  }    
+  }
+
+  // Busca o perfil do contato e atualiza a imagem
+  loadContactProfile(userId: number): void {
+    this.dataManagerService.getUserById(userId).subscribe({
+      next: (profile) => {
+        const contact = this.contacts.find(c => c.id === userId);
+        if (contact) {
+          contact.images = profile.images || ['/assets/default-profile.png']; // Atualiza as imagens do contato
+        }
+      },
+      error: (err) => console.error('Erro ao buscar perfil do contato:', err),
+    });
+  }
 
   // Seleciona um chat room e carrega suas mensagens
   onSelectChatRoom(chatRoomId: string): void {
