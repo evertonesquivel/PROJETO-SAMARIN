@@ -28,17 +28,18 @@ export class ChatPageComponent implements OnInit {
   ngOnInit(): void {
     // Obtém o ID do usuário logado (por exemplo, do token ou localStorage)
     this.userId = Number(localStorage.getItem('userId'));
-
+  
     // Carrega os contatos/conversas do usuário
     this.loadContacts();
-
+  
     // Inicializa o WebSocket
     this.chatService.initializeWebSocket(this.userId);
-
+  
     // Escuta novas mensagens via WebSocket
     this.chatService.onMessage().subscribe((newMessage) => {
       if (this.selectedChatRoom && newMessage.chatRoomId === this.selectedChatRoom.id) {
         this.messages.push(newMessage);
+        this.messages.sort((a, b) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()); // Ordena as mensagens por data
       }
     });
   }
@@ -83,8 +84,8 @@ export class ChatPageComponent implements OnInit {
         // Atualiza o chatRoom selecionado
         this.selectedChatRoom = selectedContact;
   
-        // Atualiza as mensagens
-        this.messages = messages;
+        // Atualiza as mensagens e ordena por data
+        this.messages = messages.sort((a, b) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime());
   
         console.log('ChatRoom definido:', this.selectedChatRoom);
         console.log('Mensagens carregadas:', this.messages);

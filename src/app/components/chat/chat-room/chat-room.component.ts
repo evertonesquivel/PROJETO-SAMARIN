@@ -30,11 +30,12 @@ export class ChatRoomComponent implements OnInit {
     
     if (this.chatRoom?.id && this.userId) {
       this.loadMessages();
-
+  
       // Ouve novas mensagens recebidas via WebSocket
       this.chatService.onMessage().subscribe((message) => {
         if (message.chatRoomId === this.chatRoom.id) {
-          this.messages.push(message); // Adiciona a nova mensagem à lista de mensagens
+          this.messages.push(this.mapToMessage(message)); // Adiciona a nova mensagem à lista de mensagens
+          this.messages.sort((a, b) => a.sentAt.getTime() - b.sentAt.getTime()); // Ordena as mensagens por data
         }
       });
     }
@@ -45,13 +46,16 @@ export class ChatRoomComponent implements OnInit {
       this.chatService.getMessages(this.chatRoom.id).subscribe(
         (data: any) => {
           console.log('Mensagens carregadas:', data);
-
+  
           if (Array.isArray(data)) {
             // Filtra as mensagens para mostrar apenas as que correspondem ao usuário logado
-            this.messages = data.filter((msg) => 
-              // Verifica se o ID do usuário logado é o sender_id ou receiver_id
-              (msg.sender_id === this.userId || msg.receiver_id === this.userId)
-            ).map((msg) => this.mapToMessage(msg));
+            this.messages = data
+              .filter((msg) => 
+                // Verifica se o ID do usuário logado é o sender_id ou receiver_id
+                (msg.sender_id === this.userId || msg.receiver_id === this.userId)
+              )
+              .map((msg) => this.mapToMessage(msg))
+              .sort((a, b) => a.sentAt.getTime() - b.sentAt.getTime()); // Ordena as mensagens por data
           } else if (data && typeof data === 'object') {
             // Se `data` for um único objeto, envolve em um array e converte
             this.messages = [this.mapToMessage(data)];
