@@ -209,4 +209,61 @@ public uploadImages(formData: FormData): Observable<any> {
     })
   );
 }
+ // Método para enviar os dados do formulário
+public submitFormData(formData: any): Observable<any> {
+  // 1. Separar os dados
+  const userData = this.prepareUserData(formData);
+  const locationData = this.prepareLocationData(formData);
+  const imagesData = this.prepareImagesData(formData);
+
+  // 2. Enviar os dados para o backend
+  return this.http.post(`${this.apiUrl}/register`, { userData, locationData, imagesData }).pipe(
+    catchError(error => {
+      console.error('Erro ao enviar dados do formulário:', error);
+      return throwError(error);
+    })
+  );
+}
+
+// Método para preparar os dados da tabela `users`
+private prepareUserData(formData: any): any {
+  return {
+    name: formData.name || null, // Garante que o campo não seja undefined
+    surname: formData.surname || null,
+    birth_date: formData.birth_date || null,
+    user_tag: formData.user_tag || null,
+    email: formData.email || null,
+    password: formData.password || null,
+    phone: formData.phone || null,
+    profession: formData.profession || null,
+    gender_identity: formData.gender_identity || null,
+    sexual_orientation: formData.sexual_orientation || null,
+    pronouns: formData.pronouns || null,
+    min_age_interest: formData.min_age_interest || null,
+    max_age_interest: formData.max_age_interest || null,
+    personality: formData.personality || null,
+    hobbies: formData.hobbies || null,
+    specific_interests: formData.specific_interests || null,
+    relationship_types: formData.relationship_types || null,
+  };
+
+}
+
+// Método para preparar os dados da tabela `locations`
+private prepareLocationData(formData: any): any {
+  return {
+    city: formData.city,
+    state: formData.state,
+    latitude: formData.latitude,
+    longitude: formData.longitude,
+  };
+}
+
+// Método para preparar os dados da tabela `user_images`
+private prepareImagesData(formData: any): any {
+  return {
+    profileImage: formData.profileImage,
+    galleryImages: formData.galleryImages,
+  };
+}
 }
