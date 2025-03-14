@@ -7,27 +7,25 @@
 
   <div class="container__btn__action">
     <ng-container *ngIf="isAuthenticated; else showLogin">
-      <!-- Botão com a foto de perfil -->
       <button class="profile-btn" (click)="toggleProfileMenu()">
-        <img *ngIf="userProfile?.images?.length" [src]="userProfile.images[0]" alt="Foto de perfil">
+        <img *ngIf="userProfile?.images?.length" [src]="userProfile.images[0]" alt="Profile">
       </button>
 
       <div *ngIf="profileMenuOpen" class="profile-menu">
         <div class="profile-info">
-          <img *ngIf="userProfile?.images?.length" [src]="userProfile.images[0]" alt="Foto de perfil">
+          <img *ngIf="userProfile?.images?.length" [src]="userProfile.images[0]" alt="Profile">
           <p>{{ userProfile?.name }}</p>
           <p>{{ userProfile?.email }}</p>
           <p>{{ "@" + userProfile?.user_tag }}</p>
         </div>
+        <button (click)="navigateToProfile()">Ver e Editar Perfil</button>
         <button (click)="goToMessages()">Ver Mensagens</button>
         <button (click)="logout()">Logout</button>
       </div>
 
-      <!-- Botão para ver mensagens -->
       <button class="message-btn" (click)="goToMessages()"></button>
-
-      <!-- Botão do menu -->
       <button class="menu-btn" (click)="toggleNavbar()"></button>
+      
       <div *ngIf="navbarOpen" class="navbar">
         <ul>
           <li (click)="logout()">Logout</li>

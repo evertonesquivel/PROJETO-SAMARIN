@@ -4,36 +4,43 @@ import { Person } from '../../models/person.model';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { LoginService } from '../../services/auth/login.service'; // Importa o LoginService
+import { LoginService } from '../../services/auth/login.service';
 import { DataManagerService } from '../../services/user-data/data-manager.service';
-import { Pipe, PipeTransform } from '@angular/core';
-
+import { FormsModule } from '@angular/forms';
+import { MatchAnimationComponent } from '../../match-animation/match-animation.component';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-main-section',
   templateUrl: './main-section.component.html',
   styleUrls: ['./main-section.component.css'],
   standalone: true,
-  imports: [CommonModule, HttpClientModule]
+  imports: [CommonModule, HttpClientModule, MatchAnimationComponent, FormsModule]
 })
 export class MainSectionComponent implements OnInit {
   users: Person[] = [];
   currentIndex = 0;
   currentImageIndex = 0;
   currentPerson: Person | undefined;
-  currentImage: string = '';
-  userId: number | undefined; // Armazena o ID do usuário logado
+  currentImage: string | null = null;
+  userId: number | undefined;
+  showMatchAnimation = false;
+  showLocationModal = false;
+  newLatitude: number | null = null;
+  newLongitude: number | null = null;
+  filterDistance: number = 10;
+  showAlert: boolean = false;
 
   constructor(
-    private mainSectionService: MainSectionService, 
-    private loginService: LoginService, // Injetar o LoginService
-    private dataManagerService : DataManagerService,
+    private mainSectionService: MainSectionService,
+    private loginService: LoginService,
+    private dataManagerService: DataManagerService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     console.log('ngOnInit chamado');
-    
+
     const userId = this.loginService.getUserId();
     if (userId) {
       console.log('ID do usuário obtido:', userId);
@@ -41,18 +48,31 @@ export class MainSectionComponent implements OnInit {
       this.loadUsers();
     } else {
       console.error('Usuário não está logado ou ID não disponível');
-      // Redirecionar para a página de login ou mostrar uma mensagem de erro
     }
   }
+
   loadUsers(): void {
+    this.users = []; // Limpa o array de usuários
+    this.currentPerson = undefined; // Reseta o usuário atual
+    this.currentImage = null; // Reseta a imagem atual
+  
     this.dataManagerService.getUsers().subscribe(
-      (data) => {
+      (data: Person[]) => {
         console.log('Dados de usuários obtidos:', data);
-        this.users = data;
+        this.users = data.map(user => ({
+          ...user,
+          images: user.images || [] // Garante que `images` seja um array
+        }));
+  
+        // Busca as imagens para cada usuário
+        this.users.forEach(user => {
+          this.fetchUserImages(user.id);
+        });
+  
         if (this.users.length > 0) {
           this.currentPerson = this.users[this.currentIndex];
-          this.currentImage = this.currentPerson?.images[this.currentImageIndex] || '';
-          console.log('Pessoa atual definida:', this.currentPerson);
+          console.log('Imagens do usuário atual:', this.currentPerson.images);
+          this.updateCurrentImage();
         } else {
           console.log('Nenhum usuário obtido');
         }
@@ -62,73 +82,88 @@ export class MainSectionComponent implements OnInit {
       }
     );
   }
+ 
+
+  fetchUserImages(userId: number): void {
+    this.dataManagerService.fetchAndSaveUserImages(userId).pipe(
+      switchMap((images) => {
+        const user = this.users.find(u => u.id === userId);
+        if (user) {
+          user.images = images.map(img => img.imageUrl);
+        }
+        return []; // Retorna um observable vazio para completar a assinatura
+      })
+    ).subscribe(
+      () => {}, // Nada a fazer aqui
+      (error) => console.error('Erro ao buscar imagens do usuário:', error)
+    );
+  }
+
+  updateCurrentImage(): void {
+    if (this.currentPerson) {
+      if (!this.currentPerson.images || this.currentPerson.images.length === 0) {
+        this.currentPerson.images = ['assets/placeholder.jpg'];
+      }
+      this.currentImage = this.currentPerson.images[this.currentImageIndex];
+    } else {
+      this.currentImage = 'assets/placeholder.jpg';
+    }
+    console.log('Imagem atualizada:', this.currentImage);
+  }
 
   nextImage(): void {
-    if (this.currentPerson && this.currentPerson.images.length > 0) {
+    if (this.currentPerson && this.currentPerson.images && this.currentPerson.images.length > 0) {
       this.currentImageIndex = (this.currentImageIndex + 1) % this.currentPerson.images.length;
       this.currentImage = this.currentPerson.images[this.currentImageIndex];
     }
   }
 
   prevImage(): void {
-    if (this.currentPerson && this.currentPerson.images.length > 0) {
+    if (this.currentPerson && this.currentPerson.images && this.currentPerson.images.length > 0) {
       this.currentImageIndex = (this.currentImageIndex - 1 + this.currentPerson.images.length) % this.currentPerson.images.length;
       this.currentImage = this.currentPerson.images[this.currentImageIndex];
     }
   }
+
   nextPerson(): void {
     if (this.users.length > 0) {
       this.currentIndex = (this.currentIndex + 1) % this.users.length;
       this.currentPerson = this.users[this.currentIndex];
       this.currentImageIndex = 0;
-      this.currentImage = this.currentPerson?.images[this.currentImageIndex] || '';
+      this.updateCurrentImage();
     }
   }
 
   like(): void {
-    console.log('Função like() chamada');
-    
     if (!this.currentPerson || !this.userId) {
-      console.log('Like cancelado: currentPerson ou userId não definidos');
-      console.log('currentPerson:', this.currentPerson);
-      console.log('userId:', this.userId);
       return;
     }
 
     const likedUserId = this.currentPerson.id;
-    console.log('Enviando like para o usuário:', likedUserId);
-
     this.mainSectionService.likeOrDislike(this.userId, likedUserId, true).subscribe(
-      response => {
-        console.log('Resposta do servidor após like:', response);
+      (response) => {
         if (response.isMutual) {
-          console.log('Like mútuo detectado!');
-          alert('Like Mútuo! 🎉');
+          this.showMatchAnimation = true;
+          setTimeout(() => {
+            this.showMatchAnimation = false;
+          }, 6000);
         }
         this.nextPerson();
       },
-      error => {
+      (error) => {
         console.error('Erro ao dar like:', error);
       }
     );
   }
 
   dislike(): void {
-    console.log('Função dislike() chamada');
-    
     if (!this.currentPerson || !this.userId) {
-      console.log('Dislike cancelado: currentPerson ou userId não definidos');
-      console.log('currentPerson:', this.currentPerson);
-      console.log('userId:', this.userId);
       return;
     }
 
     const dislikedUserId = this.currentPerson.id;
-    console.log('Enviando dislike para o usuário:', dislikedUserId);
-
     this.mainSectionService.likeOrDislike(this.userId, dislikedUserId, false).subscribe(
       () => {
-        console.log('Dislike processado com sucesso');
         this.nextPerson();
       },
       error => {
@@ -136,21 +171,21 @@ export class MainSectionComponent implements OnInit {
       }
     );
   }
-  
+
   calculateAge(birthDate?: string): number | null {
     if (!birthDate) {
       return null;
     }
-  
+
     const today = new Date();
     const birth = new Date(birthDate);
     let age = today.getFullYear() - birth.getFullYear();
     const monthDiff = today.getMonth() - birth.getMonth();
-  
+
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
       age--;
     }
-  
+
     return age;
   }
 
@@ -158,15 +193,76 @@ export class MainSectionComponent implements OnInit {
     this.router.navigate([`/perfil/${id}`]);
   }
 
-  getUserById(id: number): Person | undefined {
-    return this.users.find(person => person.id === id);
+  openLocationModal(): void {
+    this.showLocationModal = true;
   }
-}@Pipe({
-  name: 'stringToArray'
-})
-export class StringToArrayPipe implements PipeTransform {
-  transform(value: string, separator: string = ','): string[] {
-    return value ? value.split(separator).map(item => item.trim()) : [];
+
+  closeLocationModal(): void {
+    this.showLocationModal = false;
+  }
+
+  getCurrentLocation(): void {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.newLatitude = position.coords.latitude;
+          this.newLongitude = position.coords.longitude;
+          console.log('Localização obtida:', this.newLatitude, this.newLongitude);
+        },
+        (error) => {
+          console.error('Erro ao obter localização:', error);
+          alert('Não foi possível obter sua localização. Atualize manualmente.');
+        }
+      );
+    } else {
+      alert('Geolocalização não suportada pelo navegador.');
+    }
+  }
+
+  updateLocation(): void {
+    if (this.newLatitude && this.newLongitude) {
+      const userId = this.loginService.getUserId();
+      if (userId) {
+        this.dataManagerService.updateUserLocation(userId, this.newLatitude, this.newLongitude).subscribe(
+          (response) => {
+            console.log('Localização atualizada:', response);
+            this.closeLocationModal();
+            this.loadUsers();
+          },
+          (error) => {
+            console.error('Erro ao atualizar localização:', error);
+          }
+        );
+      } else {
+        console.error('Usuário não está logado.');
+      }
+    } else {
+      alert('Preencha a latitude e a longitude.');
+    }
+  }
+
+  updateFilterDistance(): void {
+    const userId = this.loginService.getUserId();
+    if (userId) {
+      this.dataManagerService.updateFilterDistance(userId, this.filterDistance).subscribe(
+        (response) => {
+          console.log('Distância de filtragem atualizada:', response);
+          this.closeLocationModal();
+          this.loadUsers();
+        },
+        (error) => {
+          console.error('Erro ao atualizar distância de filtragem:', error);
+        }
+      );
+    } else {
+      console.error('Usuário não está logado.');
+    }
+  }
+
+  sendMessage() {
+    this.showAlert = true;
+    setTimeout(() => {
+      this.showAlert = false;
+    }, 3000);
   }
 }
-

@@ -1,0 +1,16 @@
+<div class="message-input-container">
+  <input
+    type="text"
+    [(ngModel)]="message"
+    placeholder="Digite sua mensagem..."
+    (keyup.enter)="onSendMessage()"
+    aria-label="Campo para digitar sua mensagem"
+  />
+  <button
+    [disabled]="!message.trim()"
+    (click)="onSendMessage()"
+    aria-label="Enviar mensagem"
+  >
+    Enviar
+  </button>
+</div>

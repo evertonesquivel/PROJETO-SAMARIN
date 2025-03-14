@@ -1,0 +1,46 @@
+.message-input-container {
+  display: flex;
+  align-items: center;
+  padding: 15px; /* Aumenta o padding */
+  background-color: #f1f1f1;
+  border-top: 1px solid #ddd;
+  gap: 10px;
+}
+
+input[type='text'] {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 15px; /* Aumenta o padding interno */
+  font-size: 14px; /* Aumenta o tamanho da fonte */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 8px;
+  outline: none;
+  transition: border-color 0.3s ease;
+  height: 35px; /* Ajusta a altura */
+  width: 400px
+}
+
+input[type='text']:focus {
+  border-color: #007bff;
+}
+
+button {
+  padding: 12px 15px; /* Aumenta o padding */
+  font-size: 14px; /* Aumenta o tamanho da fonte */
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+  background-color: #0056b3;
+}

@@ -1,0 +1,15 @@
+<div class="chat-list">
+  <div *ngIf="!contacts.length" class="no-conversations">
+    Nenhuma conversa encontrada.
+  </div>
+  <div *ngFor="let contact of contacts" class="chat-item" (click)="onSelectChatRoom(contact.id)">
+    <div class="chat-item-info">
+      <!-- Exibe a primeira imagem ou o placeholder -->
+      <img class="profile-image" [src]="contact.images[0]" alt="Foto de perfil" />
+      <div class="chat-item-details">
+        <h4 class="chat-name">{{ contact.name }}</h4>
+        <p class="last-message">{{ contact.lastMessage || 'Nenhuma mensagem' }}</p>
+      </div>
+    </div>
+  </div>
+</div>

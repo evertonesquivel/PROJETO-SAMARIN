@@ -1,64 +1,96 @@
 import { Injectable, Inject, PLATFORM_ID, Injector } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { map, catchError, switchMap } from 'rxjs/operators';
+import { Observable, of, BehaviorSubject, throwError } from 'rxjs';
+import { map, catchError, switchMap, tap } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
-import { DataManagerService } from '../user-data/data-manager.service';
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoginService {
   private apiUrl = 'http://localhost:3000';
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
+  private userProfileSubject = new BehaviorSubject<any>(null);
+  private injector: Injector;
 
   constructor(
     private http: HttpClient,
-    private injector: Injector, // Injeta o Injector
+    injector: Injector, // Injeta o Injector
     @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
-  private get dataManagerService(): DataManagerService {
-    return this.injector.get(DataManagerService); // Usa o Injector para resolver a dependência
-}
-  initializeApp(): Observable<void> {
-    const authToken = this.getToken();
-    const refreshToken = this.getRefreshToken();
-
-    if (!authToken && refreshToken) {
-      // Tenta renovar o token de acesso usando o refresh token
-      return this.refreshAccessToken().pipe(
-        switchMap(newToken => (newToken ? this.loadUserData() : of(undefined))),
-        catchError(() => {
-          this.logout();
-          return of(undefined);
-        })
-      );
-    } else if (authToken) {
-      // Token ainda válido, carrega os dados do usuário
-      return this.loadUserData();
-    }
-    return of(undefined);
+  ) {
+    this.injector = injector;
   }
 
-  // Método para carregar os dados do usuário após a renovação do token
-  loadUserData(): Observable<void> {
+
+  // Observable públicos
+  get isAuthenticated$(): Observable<boolean> {
+    return this.isAuthenticatedSubject.asObservable();
+  }
+
+  get userProfile$(): Observable<any> {
+    return this.userProfileSubject.asObservable();
+  }
+
+  initializeApp(): Observable<void> {
+    return this.refreshAccessToken().pipe(
+      switchMap((newToken) => {
+        if (newToken) {
+          return this.loadUserData();
+        } else {
+          this.isAuthenticatedSubject.next(false);
+          return of(undefined);
+        }
+      }),
+      catchError(() => {
+        this.logout();
+        return of(undefined);
+      })
+    );
+  }
+
+  // Método para carregar os dados do perfil do usuário
+  private loadUserData(): Observable<void> {
+    return this.getUserProfile().pipe(
+      tap((profile) => {
+        this.userProfileSubject.next(profile);
+        this.isAuthenticatedSubject.next(true);
+      }),
+      map(() => undefined)
+    );
+  }
+
+  // Método para buscar o perfil do usuário
+  getUserProfile(): Observable<any> {
     const token = this.getToken();
-    if (token) {
-      // Aqui você chamaria o serviço para buscar os dados do perfil com o token atualizado
-      return this.dataManagerService.getUserProfile().pipe(map(() => undefined)); // Substitua com uma chamada ao serviço de perfil do usuário, se houver
+    if (!token) {
+      return throwError(() => new Error('Token não disponível.'));
     }
-    return of(undefined);
+
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    return this.http.get(`${this.apiUrl}/profile`, { headers }).pipe(
+      map((response: any) => response[0]),
+      catchError(error => {
+        console.error('Erro ao buscar perfil do usuário:', error);
+        return throwError(error);
+      })
+    );
   }
 
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
-      map((response: any) => {
-        if (response && response.accessToken && response.refreshToken && response.userId && isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('authToken', response.accessToken);
-          localStorage.setItem('refreshToken', response.refreshToken);
-          localStorage.setItem('userId', response.userId.toString());
-          this.requestGeolocation(response.userId);
+      switchMap((response: any) => {
+        if (response?.accessToken && response?.refreshToken && response?.userId) {
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem('authToken', response.accessToken);
+            localStorage.setItem('refreshToken', response.refreshToken);
+            localStorage.setItem('userId', response.userId.toString());
+          }
+          console.log('Login bem-sucedido. Solicitando permissão para acessar a localização...');
+          this.requestGeolocation(response.userId); // Solicita a localização após o login
+          return this.loadUserData().pipe(map(() => response));
         }
-        return response;
+        return of(response);
       })
     );
   }
@@ -73,6 +105,8 @@ export class LoginService {
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('userId');
     }
+    this.isAuthenticatedSubject.next(false);
+    this.userProfileSubject.next(null);
   }
 
   refreshAccessToken(): Observable<string | null> {
@@ -80,12 +114,13 @@ export class LoginService {
     if (!refreshToken) return of(null);
 
     return this.http.post(`${this.apiUrl}/refresh-token`, { refreshToken }).pipe(
-      map((response: any) => {
+      switchMap((response: any) => {
         const newAccessToken = response.accessToken;
         if (newAccessToken && isPlatformBrowser(this.platformId)) {
           localStorage.setItem('authToken', newAccessToken);
+          return this.loadUserData().pipe(map(() => newAccessToken));
         }
-        return newAccessToken;
+        return of(null);
       }),
       catchError(() => {
         this.logout();
@@ -116,13 +151,42 @@ export class LoginService {
 
   private requestGeolocation(userId: number): void {
     if (navigator.geolocation) {
+      console.log('Solicitando permissão para acessar a localização...');
+
       navigator.geolocation.getCurrentPosition(
-        position => {
+        (position) => {
+          console.log('Permissão concedida. Obtendo localização...');
           const { latitude, longitude } = position.coords;
-          this.updateLocation(userId, latitude, longitude).subscribe();
+          console.log('Localização obtida:', { latitude, longitude });
+
+          this.updateLocation(userId, latitude, longitude).subscribe(
+            () => console.log('Localização atualizada com sucesso.'),
+            (error) => console.error('Erro ao atualizar localização:', error)
+          );
         },
-        error => console.error('Erro ao obter localização:', error)
+        (error) => {
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              console.error('Permissão para acessar a localização foi negada pelo usuário.');
+              break;
+            case error.POSITION_UNAVAILABLE:
+              console.error('Localização indisponível.');
+              break;
+            case error.TIMEOUT:
+              console.error('Tempo limite excedido ao tentar obter a localização.');
+              break;
+            default:
+              console.error('Erro ao obter localização:', error.message);
+          }
+        },
+        {
+          enableHighAccuracy: true, // Tenta obter a localização com alta precisão
+          timeout: 5000, // Tempo limite de 5 segundos
+          maximumAge: 0 // Não usa cache de localização
+        }
       );
+    } else {
+      console.error('Geolocalização não é suportada pelo navegador.');
     }
   }
 
@@ -131,11 +195,10 @@ export class LoginService {
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
     return this.http.post(`${this.apiUrl}/update-location`, { userId, latitude, longitude }, { headers });
   }
+
   isTokenExpired(token: string): boolean {
     if (!token) return true;
-
     const expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
     return (Math.floor((new Date).getTime() / 1000)) >= expiry;
-}
-
+  }
 }

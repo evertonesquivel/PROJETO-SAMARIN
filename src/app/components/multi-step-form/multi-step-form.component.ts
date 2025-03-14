@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { DataManagerService } from '../../services/user-data/data-manager.service';
 
 @Component({
   selector: 'app-multi-step-form',
@@ -46,7 +47,7 @@ export class MultiStepFormComponent implements OnInit {
     'Exploração', 'Não definido'
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private dataManagerService: DataManagerService) { }
 
   ngOnInit(): void {
     this.initializeForms();
@@ -220,37 +221,67 @@ export class MultiStepFormComponent implements OnInit {
     return phonePattern.test(phone);
   }
   
-
   submitForm() {
+    // Validações iniciais
     this.showLocationMessage = true;
     this.validateAgeRange();
+  
     if (!this.validatePasswordMatch()) {
       alert("As senhas não coincidem.");
       return;
     }
+  
     this.validateStringFields();
-
+  
     if (!this.isPhoneNumberValid(this.step1Form.value.phone)) {
       alert('Por favor, insira um número de telefone válido.');
       return;
     }
-
+  
+    // Verifica se a geolocalização é suportada
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           const { latitude, longitude } = position.coords;
-
+  
+          // Converte a imagem de perfil para base64 (se existir)
+          const profileImageBase64 = this.imagemPerfil ? await this.convertImageToBase64(this.imagemPerfil) : null;
+  
+          // Filtra as imagens nulas e converte as restantes para base64
+          const galleryImagesBase64 = await Promise.all(
+            this.images
+              .filter((image): image is File => image !== null) // Filtra valores null e garante que o tipo é File
+              .map(image => this.convertImageToBase64(image))
+          );
+  
+          // Prepara os dados para envio
           const finalSubmission = {
-            ...this.step1Form.value,
-            ...this.step2Form.value,
-            ...this.step3Form.value,
-            ...this.step4Form.value,
-            ...this.step5Form.value,
-            photos: this.images.map(image => image ? this.getImagePath(image.name) : null).filter(path => path !== null),
-            location: { latitude, longitude }
+            ...this.step1Form.value, // Dados do step1
+            ...this.step2Form.value, // Dados do step2
+            ...this.step3Form.value, // Dados do step3
+            ...this.step4Form.value, // Dados do step4
+            ...this.step5Form.value, // Dados do step5
+            city: this.step2Form.value.city, // Cidade
+            state: this.step2Form.value.state, // Estado
+            latitude, // Latitude
+            longitude, // Longitude
+            profileImage: profileImageBase64, // Imagem de perfil em base64
+            galleryImages: galleryImagesBase64 // Fotos da galeria em base64
           };
-
+  
           console.log('Formulário completo!', finalSubmission);
+  
+          // Envia os dados para o backend
+          this.dataManagerService.submitFormData(finalSubmission).subscribe(
+            (response: any) => {
+              console.log('Dados enviados com sucesso:', response);
+              alert('Cadastro realizado com sucesso!');
+            },
+            (error: any) => {
+              console.error('Erro ao enviar dados:', error);
+              alert('Erro ao realizar cadastro. Tente novamente.');
+            }
+          );
         },
         (error) => {
           console.error('Erro ao obter localização:', error);
@@ -261,4 +292,15 @@ export class MultiStepFormComponent implements OnInit {
       alert('Geolocalização não é suportada por este navegador.');
     }
   }
+  
+  // Método para converter um arquivo de imagem para base64
+  convertImageToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  }
+  
 }

@@ -102,3 +102,18 @@ header {
 .navbar li:hover {
   background-color: #f1f1f1;
 }
+.profile-menu button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: none;
+  border-radius: 5px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+  text-align: center;
+}
+
+.profile-menu button:hover {
+  background-color: #ddd;
+}

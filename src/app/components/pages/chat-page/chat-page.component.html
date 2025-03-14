@@ -1,1 +1,18 @@
-<p>chat-page works!</p>
+<div class="chat-page">
+  <div class="chat-sidebar">
+    <!-- Passa o evento para o método de seleção do chat -->
+    <app-chat-list (chatRoomSelected)="onSelectChatRoom($event)"></app-chat-list>
+  </div>
+
+  <div class="chat-main">
+    <app-chat-room 
+      *ngIf="selectedChatRoom" 
+      [chatRoom]="selectedChatRoom" 
+      [messages]="messages" 
+      (sendMessage)="onSendMessage($event)">
+    </app-chat-room>
+    <div class="empty-chat" *ngIf="!selectedChatRoom">
+      <p>Selecione uma conversa para começar a interagir.</p>
+    </div>
+  </div>
+</div>

@@ -1,47 +1,83 @@
-<!-- Seção Principal -->
 <div class="perfil-container">
-    <div class="perfil-left">
-      <img class="perfil-image" [src]="personCarregado.images[0]" alt="{{personCarregado.name}}">
-      <p class="perfil-name">{{personCarregado.name}}</p>
-      <p class="perfil-nickname">{{ "@" + personCarregado.user_tag }}</p>
+  <div class="perfil-left">
+    <img class="perfil-image" [src]="personCarregado.images[0]" alt="{{personCarregado.name}}">
+    <!-- Input para trocar a imagem de perfil -->
+    <div *ngIf="isEditing">
+      <input
+        type="file"
+        (change)="onProfileImageChange($event)"
+        accept=".png, .jpg, .jpeg, .gif"
+      />
+      <p class="file-info">Apenas arquivos .png, .jpg, .jpeg ou .gif são permitidos.</p>
     </div>
-    <div class="perfil-right">
-      <p><strong>Sexual Orientetion:</strong> {{personCarregado.sexual_orientation}}</p>
+    <p class="perfil-name">{{personCarregado.name}}</p>
+    <p class="perfil-nickname">{{ "@" + personCarregado.user_tag }}</p>
+    <button *ngIf="isCurrentUser && !isEditing" class="edit" (click)="startEditing()">Editar Perfil</button>
+    <button *ngIf="isCurrentUser && isEditing" class="save" (click)="saveChanges()">Salvar</button>
+    <button *ngIf="isCurrentUser && isEditing" class="cancel" (click)="cancelEditing()">Cancelar</button>
+  </div>
+  <div class="perfil-right">
+    <div *ngIf="!isEditing">
+      <p><strong>Sexual Orientation:</strong> {{personCarregado.sexual_orientation}}</p>
       <p><strong>Idade:</strong> {{calculateAge(personCarregado.birth_date)}}</p>
       <p><strong>Identificação:</strong> {{personCarregado.gender_identity}}</p>
       <p><strong>Interesse:</strong> {{personCarregado.relationship_types}}</p>
       <p><strong>Hobbies:</strong> {{personCarregado.interest}}</p>
       <p><strong>Cidade:</strong> {{locationCarregado.city}}</p>
       <p><strong>Estado:</strong> {{locationCarregado.state}}</p>
-      
-      <div class="actions">
-        <button class="like" (click)="like()"></button>
-        <button class="dislike" (click)="dislike()"></button>
-        <button class="send-message" (click)="sendMessage()"></button>
-      </div>
     </div>
-  </div>
-  
-  <!-- Nova Seção -->
-  <div class="additional-section">
-    <div class="interests-container">
-      <h2>Interesses</h2>
-      <p>{{personCarregado.specific_interests}}</p>
-    </div>
-    <div class="gallery-container">
-      <h2>Galeria</h2>
-      <div class="gallery-grid">
-        <img *ngFor="let img of getGalleryImages()" [src]="img" (click)="openPopup(img)" alt="Galeria">
-      </div>
-    </div>
-  </div>
-  
-  <!-- Seção Principal e Nova Seção continuam iguais -->
+    <div *ngIf="isEditing">
+      <label><strong>Sexual Orientation:</strong></label>
+      <input [(ngModel)]="personCarregado.sexual_orientation" />
 
-<!-- Popup para exibir imagem -->
-<div class="popup" *ngIf="selectedImage">
-  <img [src]="selectedImage" alt="Imagem em destaque">
-  <button class="close-popup" (click)="closePopup()">Fechar</button>
+      <label><strong>Identificação:</strong></label>
+      <input [(ngModel)]="personCarregado.gender_identity" />
+
+      <label><strong>Interesse:</strong></label>
+      <input [(ngModel)]="personCarregado.relationship_types" />
+
+      <label><strong>Hobbies:</strong></label>
+      <input [(ngModel)]="personCarregado.interest" />
+
+      <label><strong>Cidade:</strong></label>
+      <input [(ngModel)]="locationCarregado.city" />
+
+      <label><strong>Estado:</strong></label>
+      <input [(ngModel)]="locationCarregado.state" />
+    </div>
+    <div class="actions">
+      <button class="like" (click)="like()" [disabled]="isCurrentUser"></button>
+      <button class="dislike" (click)="dislike()" [disabled]="isCurrentUser"></button>
+      <button class="send-message" (click)="sendMessage()" [disabled]="isCurrentUser"></button>
+    </div>
+  </div>
 </div>
 
-  
+<div class="additional-section">
+  <div class="interests-container">
+    <h2>Interesses</h2>
+    <p *ngIf="!isEditing">{{personCarregado.specific_interests}}</p>
+    <textarea *ngIf="isEditing" [(ngModel)]="personCarregado.specific_interests"></textarea>
+  </div>
+  <div class="gallery-container">
+    <h2>Galeria</h2>
+    <div class="gallery-grid">
+      <img *ngFor="let img of personCarregado.images; let i = index" [src]="img" (click)="openPopup(img)" alt="Galeria">
+    </div>
+    <div *ngIf="isEditing">
+      <!-- Upload da imagem de perfil -->
+<input type="file" (change)="onProfileImageChange($event)" accept="image/*" />
+
+<!-- Upload de múltiplas imagens para a galeria -->
+<input type="file" (change)="onGalleryImagesChange($event)" multiple accept="image/*" />
+<button (click)="uploadGalleryImages(personCarregado.id, newImages)">Upload</button>
+      <p class="file-info">Apenas arquivos .png, .jpg, .jpeg ou .gif são permitidos.</p>
+      <p *ngIf="personCarregado.images.length >= 5" class="file-info">Limite máximo de 5 imagens atingido.</p>
+    </div>
+    <!-- Popup para exibir imagem -->
+    <div class="popup" *ngIf="selectedImage">
+      <img [src]="selectedImage" alt="Imagem em destaque">
+      <button class="close-popup" (click)="closePopup()">Fechar</button>
+    </div>
+  </div>
+  </div>

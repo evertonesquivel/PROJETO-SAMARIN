@@ -1,35 +1,84 @@
 <section class="container">
-  <div class="main__container">
+  <!-- Conteúdo principal (carrossel de recomendações) -->
+  <div *ngIf="users.length > 0" class="main__container">
+    <!-- Botão para abrir o modal de atualização de distância -->
+    <button class="update-distance-button" (click)="openLocationModal()">
+      Atualizar Distância
+    </button>
+
     <div class="content__left">
       <div class="carousel">
+        <!-- Exibe a imagem atual do usuário -->
         <img [src]="currentImage" alt="Profile picture">
+        <!-- Botões para navegar entre as imagens -->
         <button class="prev" (click)="prevImage()"></button>
         <button class="next" (click)="nextImage()"></button>
       </div>
     </div>
-    <div class="content__right">
+
+    <div class="content__right" *ngIf="currentPerson">
       <div class="header">
-        <!-- SUBSTITUIR DEPOIS -->
-        <h1>{{ currentPerson?.name }} {{ calculateAge(currentPerson?.birth_date) }}  <p>{{currentPerson?.pronouns}}</p></h1>
+        <h1>{{ currentPerson.name }}, {{ calculateAge(currentPerson.birth_date) }} <p>{{ currentPerson.pronouns }}</p></h1>
       </div>
       <div class="profile-info">
         <div class="badges">
-          <span class="badge" >{{ currentPerson?.sexual_orientation}}</span>
-          <span class="badge" >{{ currentPerson?.gender_identity}}</span>
-          <span class="badge" >{{ currentPerson?.relationship_types}}</span>
-          <span class="badge" >{{ currentPerson?.profession}}</span>
-          <span class="badge" *ngFor="let interest of currentPerson?.interest">
+          <!-- Exibe badges com informações do usuário -->
+          <span class="badge">{{ currentPerson.sexual_orientation }}</span>
+          <span class="badge">{{ currentPerson.gender_identity }}</span>
+          <span class="badge">{{ currentPerson.relationship_types }}</span>
+          <span class="badge">{{ currentPerson.profession }}</span>
+          <span class="badge" *ngFor="let interest of currentPerson.interest">
             {{ interest }}
           </span>
-              <span class="badge" > Interesse em pessoas de {{ currentPerson?.min_age_interest}} a {{currentPerson?.max_age_interest}} anos </span>
+          <span class="badge">Interesse em pessoas de {{ currentPerson.min_age_interest }} a {{ currentPerson.max_age_interest }} anos</span>
         </div>
       </div>
       <div class="actions">
+        <!-- Botões de like, dislike, ver perfil e enviar mensagem -->
         <button class="like" (click)="like()"></button>
         <button class="dislike" (click)="dislike()"></button>
-        <button  (click)="navigateToProfile(users[currentIndex]?.id ?? 0)" class="view-profile"></button>
-        <button class="send-message"></button>
+        <button (click)="navigateToProfile(users[currentIndex].id)" class="view-profile"></button>
+        <button class="send-message" (click)="sendMessage()"></button>
+
+        <!-- Alerta animado -->
+        <div *ngIf="showAlert" class="alert animated-alert">
+          Função disponível em breve!
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- Mensagem e botão para atualizar localização -->
+  <div *ngIf="users.length === 0" class="no-recommendations">
+    <p>Nada por aqui. Deseja atualizar a localização?</p>
+    <button (click)="openLocationModal()">Atualizar Localização</button>
+  </div>
+
+  <!-- Modal de atualização de distância de filtragem -->
+  <div *ngIf="showLocationModal" class="modal-overlay">
+    <div class="modal-content">
+      <h2>Atualizar Distância de Filtragem</h2>
+
+      <!-- Slider para ajustar a distância -->
+      <label for="filterDistance">Distância de Filtragem: {{ filterDistance }} km</label>
+      <input
+        id="filterDistance"
+        type="range"
+        min="10"
+        max="100"
+        step="10"
+        [(ngModel)]="filterDistance"
+        name="filterDistance"
+      />
+      <button (click)="getCurrentLocation()">Buscar Minha Localização</button>
+      <!-- Botão para salvar a distância -->
+      <button (click)="updateFilterDistance()">Salvar</button>
+
+      <!-- Botão para fechar o modal -->
+      <button (click)="closeLocationModal()">Fechar</button>
+    </div>
+  </div>
+
+  <!-- Animação de match -->
+  <app-match-animation *ngIf="showMatchAnimation" [user1]="currentPerson?.name" [user2]="currentPerson?.name"></app-match-animation>
 </section>

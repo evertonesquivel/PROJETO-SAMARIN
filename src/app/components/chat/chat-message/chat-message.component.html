@@ -1,0 +1,6 @@
+<div class="chat-message" [class.sent]="isSentByUser">
+  <div class="message-content">
+    <p>{{ message.content?.text }}</p>
+  </div>
+  <span class="message-timestamp">{{ message.timestamp | date: 'short' }}</span>
+</div>
